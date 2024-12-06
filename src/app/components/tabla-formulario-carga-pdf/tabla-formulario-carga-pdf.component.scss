@@ -1,0 +1,59 @@
+
+.tabla-formulario-carga {
+
+    &__header {
+
+        &__btn-add-column{
+            width: 1.25rem;
+            height: 1.25rem;
+        
+            border-radius: 4px;
+            border-style: none;
+        
+            background: var(--Primary-Main, #6990F2);
+        
+            color: white;
+        }
+
+    }
+    
+    &__body{
+
+        &__row {
+
+            &__autocomplete {
+
+
+
+            }
+
+            &__input{
+                display: flex;
+                align-items: center;
+                gap: 0.5rem;
+
+                &--icon{
+                    cursor: pointer;
+                    font-size: 1rem;
+                }
+
+            }
+            
+        }
+        
+    }
+
+    
+}
+
+
+th,td
+{
+    // border: 1px solid #ddd;
+    padding: 8px;
+    text-align: center;
+}
+
+
+
+

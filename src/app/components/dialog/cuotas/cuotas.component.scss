@@ -1,0 +1,73 @@
+.card-cuotas {
+    padding: 1.5rem;
+
+    border-radius: 0.5rem;
+    background: var(--Common-White, #FFF);
+    box-shadow: 0rem 0rem 0.125rem 0rem rgba(145, 158, 171, 0.20), 0rem 0.75rem 1.5rem -0.25rem rgba(145, 158, 171, 0.12);
+
+}
+
+
+::ng-deep .btn-cancelar {
+
+    width: 8.75rem;
+    height: 2.5rem;
+
+    color: var(--Grey-800, #212B36);
+
+    font-family: Roboto;
+    font-size: 0.9375rem;
+    font-style: normal;
+    font-weight: 700;
+    line-height: 1.625rem; 
+
+    border-radius: 0.25rem;
+    border: 1px solid var(--Grey-800, #212B36);
+    background: var(--Common-White, #FFF);
+}
+
+
+::ng-deep .btn-guardar {
+
+    width: 8.75rem;
+    height: 2.5rem;
+
+    display: flex;
+    padding: 0.5rem 2.5rem;
+    gap: 0.5rem;
+
+    justify-content: center;
+    align-items: center;
+    align-self: stretch;
+
+    cursor: pointer;
+
+    color: var(--Primary-ContrastText, #FFF);
+    font-family: Roboto;
+    font-size: 0.9375rem;
+    font-style: normal;
+    font-weight: 700;
+    line-height: 1.625rem;
+
+    border: none;
+
+    border-radius: 0.25rem;
+    background: var(--CP-Orange, #F9A12D);
+}
+
+
+
+
+/* DIALOG DE LAS CUOTAS */
+
+::ng-deep .color-header-dialog .p-dialog-header {
+    background-color: #C4CDD5;
+    color:#185287;
+
+
+    font-family: Roboto;
+    font-size: 1.5rem;
+    font-style: normal;
+    font-weight: 700;
+    line-height: 2.25rem;
+}

@@ -1,0 +1,337 @@
+<div class="formulario-carga-pdf">
+    <!-- TOP -->
+    <div class="formulario-carga-pdf__top">
+
+
+        <div class="formulario-carga-pdf__top__header">
+
+            <div class="formulario-carga-pdf__top__header--titulo">
+                <h5 class="informacion-comprobante-txt">INFORMACIÓN DEL COMPROBANTE</h5>
+
+                @if (mostrarCuitReceptorNoCooperacionWarning) {
+                <div class="flex align-items-center mt-3 p-3 contenedor-cuit-receptor-no-cooperacion">
+                    <img src="assets/icons/info-circle-brown.svg" width="18" height="18" class="mr-3">
+                    <span>El CUIT "receptor" <strong>{{cuitReceptor}}</strong> NO corresponde a <strong>Cooperación Seguros.</strong></span>
+                </div>
+                }
+
+                @if (mostrarCuitReceptorCooperacionWarning) {
+                <div class="flex align-items-center mt-3 p-3 contenedor-cuit-receptor-cooperacion">
+                    <img src="assets/icons/info-circle.svg" width="18" height="18" class="mr-3">
+                    <span>El CUIT "receptor" <strong>{{cuitReceptor}}</strong> corresponde a <strong>Cooperación Seguros.</strong></span>
+                </div>
+                }
+            </div>
+
+
+            <div class="formulario-carga-pdf__top__header--buscador">
+
+                <form [formGroup]="formObtenerProveedor" class="grid m-0">
+
+                    <p-inputGroup class="col-12 xl:col-8 p-0">
+
+                        <input class="w-full" (keyup.enter)="formObtenerProveedor.valid ? buscarProveedor() : null"
+                            formControlName="cadena" pInputText placeholder="CUIT o Razón Social del Proveedor"
+                            type="text" />
+
+                        <button (click)="buscarProveedor()" [disabled]="!formObtenerProveedor.valid"
+                            class="p-button-warning" icon="pi pi-search" pButton style="color: white;" type="button">
+                        </button>
+
+                    </p-inputGroup>
+
+                    <div *ngIf="formObtenerProveedor.get('cadena')?.errors?.['maxlength'] || formObtenerProveedor.get('cadena')?.errors?.['minlength']"
+                        style="color: red; font-size: 12px; margin-top: 0.3rem;">
+                        Mínimo 3 caracteres alfabéticos para Razón Social y Max 11 caracteres numéricos para CUIT.
+                    </div>
+
+
+                </form>
+
+            </div>
+
+
+        </div>
+
+
+        <div class="formulario-carga-pdf__top__data-card">
+            <!-- CARD DATOS PROVEEDOR -->
+            @if (!isLoading) {
+
+            <div class="align-items-start p-3 mt-2 card-datos-proveedor">
+                <div class="grid m-0">
+
+                    <div class="col-12 p-0">
+                        <h6 class="w-full proveedor-txt">{{razonSocialCard}}</h6>
+                    </div>
+
+                    <div>
+
+                        <div class="mt-1">
+                            <span class="w-full cuit-condicion-domicilio-txt  mr-4">CUIT:
+                                <strong>{{cuitEmisor}}</strong></span>
+                            <span class="w-full cuit-condicion-domicilio-txt">Condición IVA:
+                                <strong>{{condIva}}</strong></span>
+                        </div>
+
+                        <div class="mt-1">
+                            <span class="w-full cuit-condicion-domicilio-txt">Domicilio:
+                                <strong>{{domicilio}}</strong></span>
+                        </div>
+
+                    </div>
+
+                </div>
+
+            </div>
+            }
+            @else {
+            <div class="p-3 mt-3 card-datos-proveedor">
+
+                <p-skeleton width="30%" height="1rem" styleClass="mb-2"></p-skeleton>
+
+                <p-skeleton width="40%" height="1rem" styleClass="mt-1"></p-skeleton>
+
+                <p-skeleton width="20%" height="1rem" styleClass="mt-2"></p-skeleton>
+
+            </div>
+            }
+        </div>
+
+
+        <div class="formulario-carga-pdf__top__form">
+
+            <!-- FORMULARIO -->
+            <div class="flex flex-column pt-2">
+                <form [formGroup]="formEnviarFactura" class="grid m-0 w-full">
+
+                    <!-- LINEA 1 -->
+                    <div class="col-12">
+                        <p-dropdown class="w-full" styleClass="w-full" 
+                            [options]="tipoComprobante"
+                            (ngModel)="selectedTipoComprobante" 
+                            optionLabel="name" 
+                            [filter]="true" 
+                            filterBy="name"
+                            [showClear]="true" 
+                            formControlName="tipoComprobante"
+                            placeholder="Tipo de Comprobante"
+                            appendTo="body"
+                            >
+
+                            <ng-template pTemplate="selectedItem" let-selectedOption>
+                                <div class="flex align-items-center gap-2">
+                                    <div>{{ selectedOption?.name }}</div>
+                                </div>
+                            </ng-template>
+
+                            <ng-template let-comprobante pTemplate="item">
+                                <div class="flex align-items-center gap-2">
+                                    <div>{{ comprobante.name }}</div>
+                                </div>
+                            </ng-template>
+
+                        </p-dropdown>
+                    </div>
+
+                    <!-- LINEA 2 -->
+                    <div class="col-6 xl:col-6 sm:col-12">
+                        <p-floatLabel>
+                            <p-inputNumber inputStyleClass="w-full" styleClass="w-full" class="w-full" formControlName="puntoVenta"
+                                inputId="puntoVenta" placeholder="Pto. Venta" maxlength="4" />
+                            <label for="puntoVenta">Pto. Venta.</label>
+                        </p-floatLabel>
+                    </div>
+
+                    <div class="col-6 xl:col-6 sm:col-12">
+                        <p-floatLabel>
+                            <p-inputNumber inputStyleClass="w-full" styleClass="w-full" class="w-full" formControlName="numero" inputId="numero"
+                                placeholder="Nro. Comprob." maxlength="8" />
+                            <label for="numero">Nro. Comprob.</label>
+                        </p-floatLabel>
+                    </div>
+
+
+                    <!-- LINEA 3 -->
+                    <div class="col-6">
+                        <p-floatLabel>
+                            <p-inputNumber inputStyleClass="w-full" styleClass="w-full" class="w-full" formControlName="importeNeto" inputId="importeNeto"
+                                mode="currency" currency="USD" locale="en-US" />
+                            <label for="importeNeto">Importe Neto.</label>
+                        </p-floatLabel>
+
+                    </div>
+
+                    <div class="col-6">
+                        <p-floatLabel>
+                            <p-inputNumber inputStyleClass="w-full" styleClass="w-full" class="w-full" formControlName="iva" inputId="iva" />
+                            <label for="iva">IVA.</label>
+                        </p-floatLabel>
+                    </div>
+
+
+                    <!-- LINEA 4 -->
+                    <div class="col-6">
+                        <p-floatLabel>
+                            <p-inputNumber inputStyleClass="w-full" styleClass="w-full" class="w-full" formControlName="otrosImpuestos"
+                                inputId="otrosImpuestos" mode="currency" currency="USD" locale="en-US" />
+                            <label for="otrosImpuestos">Otros Impuestos.</label>
+                        </p-floatLabel>
+                    </div>
+
+                    <div class="col-6">
+                        <p-floatLabel>
+                            <p-inputNumber inputStyleClass="w-full" styleClass="w-full" class="w-full" formControlName="total" inputId="total"
+                                mode="currency" currency="USD" locale="en-US" />
+                            <label for="total">Monto Total Factura.</label>
+                        </p-floatLabel>
+                    </div>
+
+                    <!-- LINEA 5 -->
+                    <div class="col-6">
+                        <p-calendar inputStyleClass="w-full" styleClass="w-full" class="w-full" formControlName="fechaEmision"
+                            placeholder="Fecha de Emisión" dateFormat="mm/dd/yy" [iconDisplay]="'input'"
+                            [showIcon]="true" inputId="fechaEmision" />
+                    </div>
+
+                    <div class="col-6">
+                        <p-calendar inputStyleClass="w-full" styleClass="w-full" class="w-full" formControlName="fechaVencimiento"
+                            placeholder="Fecha de Vencimiento" dateFormat="dd/mm/yy" [iconDisplay]="'input'"
+                            [showIcon]="true" inputId="fechaVencimiento" />
+                    </div>
+
+
+                    <!-- LINEA 6 -->
+                    <div class="col-6">
+                        <div class="flex flex-row align-items-center justify-content-end gap-2 h-full">
+                            <p-checkbox 
+                                formControlName="facturaAbonada" 
+                                value="abonada" 
+                                inputId="facturaAbonada"
+                            />
+                            <label for="facturaAbonada">Factura Abonada</label>
+
+                        </div>
+                    </div>
+
+
+                    <div class="col-6">
+                        <p-calendar 
+                            class="w-full" styleClass="w-full" 
+                            formControlName="fechaPago"
+                            placeholder="Fecha de Pago" 
+                            dateFormat="dd/mm/yy" 
+                            [iconDisplay]="'input'" 
+                            [showIcon]="true"
+                            inputId="fechaPago" 
+                            appendTo="body" 
+                        />
+                    </div>
+
+
+                </form>
+
+            </div>
+
+
+
+
+        </div>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+        <div class="formulario-carga-pdf__top__cuotas-tabla">
+
+            <div class="formulario-carga-pdf__top__cuotas-tablas--cuotas">
+
+                <!-- CUOTAS -->
+                <div class="grid m-0">                    
+                    
+                    <div class="layout-cuotas col-6">
+                        <div class="flex flex-column gap-2">
+
+                            <span>Cant. Cuotas: <strong>{{ numCuotas }}</strong></span>
+                            
+                            <span>Importe 1° Cuota: <strong>{{ primerCuota | currency:'USD' }}</strong></span>
+                            
+                            <span>1er. Venc.: <strong>{{ primerVencimiento | date:'dd/MM/yyyy' }}</strong></span>
+                        </div>
+                    </div>
+
+                </div>
+
+                <div class="pt-3">
+                    <button class="btn-cuotas" (click)="editarCuotas($event)">
+                        <img src="assets/icons/plus.svg" width="16" height="16" alt="">Cuotas
+                    </button>
+                </div>
+                             
+
+            </div>
+
+
+            <div class="formulario-carga-pdf__top__cuotas-tabla--tabla mt-3">
+                <tabla-formulario-carga-pdf></tabla-formulario-carga-pdf>
+            </div>
+
+
+
+            <!-- EMAIL -->
+            <div class="formulario-carga-pdf__top__cuotas-tablas--email">
+                <div class="flex align-items-center gap-1 pt-3">
+
+                    <button (click)="inputReferenceEmail.click()" class="botones-subida">
+                        <img src="assets/icons/upload-arrow.svg" width="13" height="14" alt="">
+                        Subir Email
+                    </button>
+                
+                    <form [formGroup]="formEmail">
+                        <input type="file" formControlName="email" #inputReferenceEmail hidden (change)="onFileInputChange($event, 'msg')">
+                    </form>
+                
+                    <div *ngIf="nombreArchivoEmail" class="seleccionador-archivos">
+                        <img src="assets/icons/email-icon.svg" *ngIf="esMSG" class="mr-2" width="14" height="18" viewBox="0 0 15 18" fill="none" alt="">
+                        {{ nombreArchivoEmail }}
+                    </div>
+                
+                </div>
+                
+                <span class="formato-permitido-txt mt-1">Formato permitido: .msg</span>
+            </div>
+            <hr class="m-0">
+
+
+
+        </div>
+    </div>
+
+    <!-- BUTTON -->
+    <div class="formulario-carga-pdf__footer">
+        <div class="flex flex-row justify-content-end" style="gap: 0.75rem;">
+            <button class="btn-cancelar">Cancelar</button>
+            <button class="btn-guardar">Guardar</button>
+        </div>
+    </div>
+</div>
+
+
+
+

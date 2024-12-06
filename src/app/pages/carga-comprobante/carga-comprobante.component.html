@@ -1,0 +1,22 @@
+<div class="p-3 layout-cargar-comprobante">
+
+    <div class="flex p-4 border-round layout-cargar-comprobante__layout-header">
+        <h5 class="layout-cargar-comprobante__nueva-factura-txt m-0">NUEVO COMPROBANTE</h5>
+    </div>
+
+    <div class="layout-cargar-comprobante__layout-body p-3 sm:p-3 grid">
+
+        <div class="col-12 xl:col-6 layout-cargar-comprobante__card-personalizada">
+            <visualizar-carga-pdf class="w-full" (datosComprobante)="onDatosComprobanteRecibidos($event)"></visualizar-carga-pdf>
+        </div>
+
+        <div class="col sm:col-12 xl:col layout-cargar-comprobante__card-personalizada">
+            <formulario-carga-pdf class="w-full" [datosComprobante]="datosExtraidos"></formulario-carga-pdf>
+        </div>
+
+    </div>
+
+</div>
+
+
+

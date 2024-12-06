@@ -1,0 +1,104 @@
+<p-table class="tabla-formulario-carga" [value]="rows" [responsiveLayout]="'scroll'">
+  
+  <ng-template pTemplate="header">
+    <tr>
+      <th>
+        Centro de Costos
+        <button pButton class="tabla-formulario-carga__header__btn-add-column" type="button" label="+" (click)="agregarCentroDeCosto()">+</button>
+      </th>
+      <th>
+        Centro de Imputación
+        <button pButton class="tabla-formulario-carga__header__btn-add-column" type="button" label="+" (click)="agregarCentroDeImputacion()">+</button>
+      </th>
+      <th>
+        Cuentas Contables
+        <button pButton class="tabla-formulario-carga__header__btn-add-column" type="button" label="+" (click)="agregarCuentaContable()">+</button>
+      </th>
+    </tr>
+  </ng-template>
+
+  <ng-template pTemplate="body" let-row let-rowIndex="rowIndex">
+    <tr>
+
+
+      <td>
+        <!-- INPUTS CENTRO DE COSTOS -->
+        <tr *ngIf="row.centroCosto !== undefined" class="tabla-formulario-carga__body__row">
+
+          <td class="tabla-formulario-carga__body__row__autocomplete">
+            <p-autoComplete
+              (completeMethod)="buscarCentroCostos($event)"
+              [(ngModel)]="row.centroCosto.centroCosto"
+              [forceSelection]="true"
+              [minLength]="3"
+              [suggestions]="suggestionsCentroCostos"
+              appendTo="body"
+              field="descCos"
+              pTooltip="Centro de costo. Ingrese descripción o número a buscar"
+              showClear="true"
+              >
+            </p-autoComplete>
+          </td>
+
+          <td class="tabla-formulario-carga__body__row__input">
+            <p-inputNumber [(ngModel)]="row.centroCosto.valor" inputId="integeronly" />
+            <i (click)="eliminarCelda(rowIndex, 'centroCosto')" class="pi pi-times tabla-formulario-carga__body__row__input--icon"></i>
+          </td>
+
+        </tr>
+      </td>
+
+
+
+
+      <td>
+        <tr *ngIf="row.centroImputacion !== undefined" class="tabla-formulario-carga__body__row">
+
+          <td class="tabla-formulario-carga__body__row__autocomplete">
+            <p-autoComplete
+              (completeMethod)="buscarCentroImputacion($event)"
+              [(ngModel)]="row.centroImputacion.centroImputacion"
+              [forceSelection]="true"
+              [minLength]="3"
+              [suggestions]="suggestionsCentroImputacion"
+              appendTo="body"
+              field="descImpu"
+              pTooltip="Centro de imputación. Ingrese descripción o número a buscar"
+              showClear="true"
+              >
+            </p-autoComplete>
+          </td>
+
+          <td class="tabla-formulario-carga__body__row__input">
+            <p-inputNumber [(ngModel)]="row.centroImputacion.valor" inputId="integeronly" />
+            <i (click)="eliminarCelda(rowIndex, 'centroImputacion')" class="pi pi-times tabla-formulario-carga__body__row__input--icon"></i>
+          </td>
+
+        </tr>
+      </td>
+
+
+
+
+      <td>
+        <p-autoComplete
+          *ngIf="row.cuentaContable !== undefined"
+          [(ngModel)]="row.cuentaContable"
+          [suggestions]="suggestionsCuentasContables"
+          (completeMethod)="buscarCuentasContables($event)"
+          [minLength]="3"
+          [forceSelection]="true"
+          (onSelect)="seleccionarCuentaContable($event, row)"
+          field="descCon"
+          pTooltip="Cuenta contable. Ingrese descripción o número a buscar">
+        </p-autoComplete>
+      </td>
+
+
+    </tr>
+  </ng-template>
+</p-table>
+
+
+
+{{rows | json}}

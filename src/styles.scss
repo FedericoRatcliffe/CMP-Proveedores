@@ -1,1 +1,47 @@
-/* You can add global styles to this file, and also import other style files */
+
+// @import "primeng/resources/themes/mdc-light-indigo/theme.css";
+// // @import "../public/assets/theme/md-light-indigo/theme.css";
+
+// @import "primeng/resources/primeng.css";
+
+
+
+
+// // @import "../node_modules/primeflex/primeflex.css";
+// @import "../node_modules/primeflex/primeflex.scss";
+
+
+// @import "primeicons/primeicons.css";
+
+
+@import "../public/assets/theme/theme.scss";
+@import "primeng/resources/primeng.css";
+// @import "primeng/resources/primeng.min.css";
+@import "primeflex/primeflex.css";
+@import "primeicons/primeicons.css";
+
+
+html,
+body {
+    height: 100%;
+}
+
+body {
+    margin: 0;
+    // font-family: Roboto, "Helvetica Neue", sans-serif;
+}
+
+
+
+
+// CLASES QUE SE USAN EN COMPONENTE "FormularioCargaPdfComponent"
+.width-input-cuit-proveedor {
+    width: 20rem !important;
+}
+
+.p-button-warning {
+    background-color: #F9A12D;
+}
+
+
+

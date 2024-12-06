@@ -1,0 +1,30 @@
+<div class="flex align-items-center gap-3 visualizar-carga-pdf ">
+
+    <!-- BOTON SUBIR ARCHIVOS -->
+    <button (click)="inputReference.click()" class="botones-subida">
+        <img src="assets/icons/upload-arrow.svg" width="13" height="14" alt="">
+        Subir Factura
+    </button>
+    <input type="file" #inputReference hidden (change)="onFileInputChange($event, 'pdf')">
+
+    <!-- Div para mostrar el nombre del archivo -->
+    <div *ngIf="nombreArchivo" class="seleccionador-archivos">
+
+        <img src="assets/icons/pdf-icon.svg" *ngIf="esPDF" class="mr-2" width="14" height="18" viewBox="0 0 14 18" fill="none" alt="">
+
+        <img src="assets/icons/jpg-icon.svg" *ngIf="esJPG" class="mr-2" width="18" height="20" viewBox="0 0 512 512" fill="#000000" alt="">
+
+        {{ nombreArchivo }}
+    </div>
+
+</div>
+
+<span class="formato-permitido-txt mt-1">Formato permitido: .pdf y .jpg - Peso max: 3MB</span>
+
+
+<iframe 
+    class="visualizar-carga-pdf__visualizador"
+    [src]="pdfSrc" 
+    >
+</iframe>
+

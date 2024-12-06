@@ -1,0 +1,66 @@
+
+
+<div class="search-page">
+    <div class="search-page__container">
+
+        <form action="" class="search-page__container__header">
+            <div class="search-page__container__header__filters grid">
+
+                <div class="flex col-10 flex-row">
+                    <div class="col-12 sm:col-6 md:col-6 lg:col-3 xl:col-2">
+                        <p-floatLabel>
+                            <input class="w-full" pInputText id="razonSocial" placeholder="Razón Social" />
+                            <label for="razonSocial">Razón Social</label>
+                        </p-floatLabel>
+                    </div>
+
+                    <div class="col-12 sm:col-6 md:col-6 lg:col-3 xl:col-2">
+                        <p-floatLabel>
+                            <input class="w-full" pInputText [pKeyFilter]="nroComprobantePattern" />
+                            <label>Nro. Comprobante</label>
+                        </p-floatLabel>
+                    </div>
+
+
+                    <div class="col-12 sm:col-6 md:col-6 lg:col-3 xl:col-2">
+                        <p-calendar styleClass="w-full" dateFormat="dd.mm.yy" inputId="icondisplay"
+                            placeholder="Fecha Carga" [readonlyInput]="true" [iconDisplay]="'input'"
+                            [showIcon]="true" />
+                    </div>
+
+                    <div class="col-12 sm:col-6 md:col-6 lg:col-3 xl:col-2">
+                        <p-calendar styleClass="w-full" dateFormat="dd.mm.yy" inputId="icondisplay"
+                            placeholder="Fecha Pago" [readonlyInput]="true" [iconDisplay]="'input'" [showIcon]="true" />
+                    </div>
+
+
+                    <div class="col-12 sm:col-6 md:col-6 lg:col-3 xl:col-2">
+                        <p-dropdown styleClass="w-full" optionLabel="name" placeholder="Caja" />
+                    </div>
+
+
+                    <div class="col-12 sm:col-6 md:col-6 lg:col-3 xl:col-2">
+                        <p-dropdown styleClass="w-full" optionLabel="name" placeholder="Estado" />
+                    </div>
+                </div>
+                <div class="col-2 p-0"> 
+                    <button  pButton pRipple class="layout-gestion-comprobante__btn-cargar h-full" routerLink="subir-factura">Cargar Comprobante</button>
+                </div>
+
+
+                <div class="flex flex-row">
+                    <button class="layout-gestion-comprobante__btn-buscar">Buscar</button>
+                    <button class="layout-gestion-comprobante__btn-limpiar">Limpiar</button>
+                </div>
+
+            </div>
+
+            
+        </form>
+        
+        <div class="search-page__container__body">
+            <tabla-gestion-comprobantes></tabla-gestion-comprobantes>
+        </div>
+        
+    </div>
+</div>

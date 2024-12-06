@@ -1,0 +1,49 @@
+<p-table [value]="products" [(selection)]="selectedProducts" dataKey="code" [tableStyle]="{'min-width': '50rem'}">
+    
+    <ng-template pTemplate="header">
+        <tr>
+            <th style="width: 4rem"><p-tableHeaderCheckbox /></th>
+            <th>Nro. Factura</th>
+            <th>Razón Social</th>
+            <th>Fecha Carga</th>
+            <th>Fecha Pago</th>
+            <th>Monto Total</th>
+            <th>Caja</th>
+            <th>Estado</th>
+            <!-- <th></th> -->
+        </tr>
+    </ng-template>
+
+
+    <ng-template pTemplate="body" let-product>
+        <!-- <tr>
+            <td>
+                <p-tableCheckbox [value]="product" />
+            </td>
+            <td>{{product.code}}</td>
+            <td>{{product.name}}</td>
+            <td>{{product.category}}</td>
+            <td>{{product.quantity}}</td>
+        </tr> -->
+
+        <tr>
+            <td>
+                <p-tableCheckbox [value]="product" />
+            </td>
+            <td>200000000000000</td>
+            <td>Naldo S.R.L.</td>
+            <td>10/09/2024</td>
+            <td>10/09/2024</td>
+            <td>$ 0.000,00</td>
+            <td>Nombre Caja</td>
+            <td>
+                <div>
+                    <p-tag severity="success" value="AUTORIZADA"/>
+                    
+                </div>
+            </td>
+        </tr>
+    </ng-template>
+
+
+</p-table>
