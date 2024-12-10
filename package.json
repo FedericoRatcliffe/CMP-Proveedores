@@ -21,6 +21,7 @@
     "@auth0/angular-jwt": "^5.2.0",
     "@elastic/apm-rum-angular": "^3.0.4",
     "buffer": "^6.0.3",
+    "date-fns": "^4.1.0",
     "ngx-cookie-service": "^18.0.0",
     "ngx-permissions": "^17.1.0",
     "portal-proveedores": "file:",

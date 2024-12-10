@@ -20,6 +20,11 @@ import { TipoComprobanteAFIP } from '../../core/interfaces/tipoComprobanteAFIP.i
 import { CuotasComponent } from '../dialog/cuotas/cuotas.component';
 import { TablaFormularioCargaPdfComponent } from '../tabla-formulario-carga-pdf/tabla-formulario-carga-pdf.component';
 
+// import dayjs from 'dayjs';
+
+// import { addDays, parse, format, isBefore } from 'date-fns';
+
+
 
 
 @Component({
@@ -184,7 +189,7 @@ export class FormularioCargaPdfComponent implements OnInit, OnChanges {
       fechaEmision: datos.fechaEmision || null,
       fechaVencimiento: datos.fechaVencimiento,
       facturaAbonada: datos.facturaAbonada ?? false,
-      fechaPago: datos.fechaPago ? new Date(datos.fechaPago) : null,
+      // fechaPago: datos.fechaPago ? new Date(datos.fechaPago) : null,
     });
 
     // Actualizar cuotas si existen
@@ -371,10 +376,10 @@ export class FormularioCargaPdfComponent implements OnInit, OnChanges {
 
 
 
-
+  
   //LOGICA FECHA DE PAGO
   private sugerirFechaPago(): void {
-    const fechaCarga = new Date(); // Fecha actual como fecha de carga
+    const fechaCarga = new Date();fechaCarga.setHours(0, 0, 0, 0);  // Fecha actual como fecha de carga
     const fechaVencimientoControl = this.formEnviarFactura.get('fechaVencimiento');
     const facturaAbonada = this.formEnviarFactura.get('facturaAbonada')?.value;
   
@@ -396,7 +401,10 @@ export class FormularioCargaPdfComponent implements OnInit, OnChanges {
       return;
     }
   
-    const fechaVencimiento = fechaVencimientoControl?.value ? new Date(fechaVencimientoControl.value) : null;
+    const fechaVencimiento = fechaVencimientoControl?.value
+    ? new Date(fechaVencimientoControl.value.split('/').reverse().join('-') + 'T00:00:00')
+    : null;
+    
   
     // Calcula fechaCarga + 15 días
     const fechaCargaMas15Dias = new Date(fechaCarga);
@@ -420,7 +428,7 @@ export class FormularioCargaPdfComponent implements OnInit, OnChanges {
     console.log('Fecha sugerida de pago:', fechaSugerida.toLocaleDateString());
   }
   
-  
 
+  
 
 }
