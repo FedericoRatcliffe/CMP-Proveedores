@@ -1,11 +1,12 @@
-import { Component } from '@angular/core';
+import { Component, effect, input, output, signal, SimpleChanges } from '@angular/core';
 
 import { TableModule } from 'primeng/table';
 import { TagModule } from 'primeng/tag';
 
 
-import { Product } from '../../paraTablaGestion/product';
+import { Product } from '../../paraTablaGestion/product.interface';
 import { ProductService } from '../../paraTablaGestion/product.service';
+import { SkeletonModule } from 'primeng/skeleton';
 
 
 
@@ -15,7 +16,8 @@ import { ProductService } from '../../paraTablaGestion/product.service';
   standalone: true,
   imports: [
     TableModule,
-    TagModule
+    TagModule,
+    SkeletonModule
   ],
   providers:[
     ProductService
@@ -23,22 +25,18 @@ import { ProductService } from '../../paraTablaGestion/product.service';
   templateUrl: './tabla-gestion-comprobantes.component.html',
   styleUrl: './tabla-gestion-comprobantes.component.scss'
 })
+
 export class TablaGestionComprobantesComponent {
+  products = input<Product[]>([]);
+  selectedProducts = input<Product[] | null>(null);
+  isLoading = input<boolean>(false);
+  checkProduct = output<any>();
+  loadingSkeletonArray: any[] = Array(5).fill({});
 
-  products!: Product[];
+  constructor(public productService: ProductService) { }
 
-  selectedProducts!: Product;
-
-  constructor(private productService: ProductService) { }
-
-  ngOnInit() {
-    this.productService.getProductsMini().then((data) => {
-      this.products = data;
-    });
+  onCheckboxChange(event: any) {
+    this.checkProduct.emit(event);
   }
-
-
-
-
 
 }

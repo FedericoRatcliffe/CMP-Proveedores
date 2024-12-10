@@ -31,8 +31,39 @@ body {
     // font-family: Roboto, "Helvetica Neue", sans-serif;
 }
 
+.tag-uppercase {
+  text-transform: uppercase;
+}
 
+.tag-dark-blue {
+  color: var(--CP-Blue-Dark, #19284B);
+  background: var(--Grey-300, #DFE3E8);
+}
 
+.tag-blue {
+  color: var(--Secondary-Dark, #1939B7);
+  background: var(--transparent-secondary-16, rgba(51, 102, 255, 0.16));
+}
+
+.tag-green {
+  background: var(--transparent-success-16, rgba(0, 171, 85, 0.16));
+  color: var(--Success-Dark, #1B806A);
+}
+
+.tag-red {
+  color: var(--Error-Dark, #B71D18);
+  background: var(--transparent-error-16, rgba(255, 86, 48, 0.16));
+}
+
+.tag-black {
+  color: var(--Grey-600, #637381);
+  background: var(--Grey-400, #C4CDD5);
+}
+
+.tag-orange {
+  background: var(--transparent-warning-16, rgba(255, 171, 0, 0.16));
+  color: var(--Secondary-Dark, #B76E00);
+}
 
 // CLASES QUE SE USAN EN COMPONENTE "FormularioCargaPdfComponent"
 .width-input-cuit-proveedor {

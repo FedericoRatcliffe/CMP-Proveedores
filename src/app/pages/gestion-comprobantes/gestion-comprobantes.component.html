@@ -1,66 +1,93 @@
-
-
 <div class="search-page">
-    <div class="search-page__container">
+  <div class="search-page__container">
 
-        <form action="" class="search-page__container__header">
-            <div class="search-page__container__header__filters grid">
-
-                <div class="flex col-10 flex-row">
-                    <div class="col-12 sm:col-6 md:col-6 lg:col-3 xl:col-2">
-                        <p-floatLabel>
-                            <input class="w-full" pInputText id="razonSocial" placeholder="Razón Social" />
-                            <label for="razonSocial">Razón Social</label>
-                        </p-floatLabel>
-                    </div>
-
-                    <div class="col-12 sm:col-6 md:col-6 lg:col-3 xl:col-2">
-                        <p-floatLabel>
-                            <input class="w-full" pInputText [pKeyFilter]="nroComprobantePattern" />
-                            <label>Nro. Comprobante</label>
-                        </p-floatLabel>
-                    </div>
-
-
-                    <div class="col-12 sm:col-6 md:col-6 lg:col-3 xl:col-2">
-                        <p-calendar styleClass="w-full" dateFormat="dd.mm.yy" inputId="icondisplay"
-                            placeholder="Fecha Carga" [readonlyInput]="true" [iconDisplay]="'input'"
-                            [showIcon]="true" />
-                    </div>
-
-                    <div class="col-12 sm:col-6 md:col-6 lg:col-3 xl:col-2">
-                        <p-calendar styleClass="w-full" dateFormat="dd.mm.yy" inputId="icondisplay"
-                            placeholder="Fecha Pago" [readonlyInput]="true" [iconDisplay]="'input'" [showIcon]="true" />
-                    </div>
-
-
-                    <div class="col-12 sm:col-6 md:col-6 lg:col-3 xl:col-2">
-                        <p-dropdown styleClass="w-full" optionLabel="name" placeholder="Caja" />
-                    </div>
-
-
-                    <div class="col-12 sm:col-6 md:col-6 lg:col-3 xl:col-2">
-                        <p-dropdown styleClass="w-full" optionLabel="name" placeholder="Estado" />
-                    </div>
-                </div>
-                <div class="col-2 p-0"> 
-                    <button  pButton pRipple class="layout-gestion-comprobante__btn-cargar h-full" routerLink="subir-factura">Cargar Comprobante</button>
-                </div>
-
-
-                <div class="flex flex-row">
-                    <button class="layout-gestion-comprobante__btn-buscar">Buscar</button>
-                    <button class="layout-gestion-comprobante__btn-limpiar">Limpiar</button>
-                </div>
-
+    <form action="" class="search-page__container__header">
+      <div class="search-page__container__header__filters grid gap-3 justify-content-between align-items-start">
+        <div class="flex col-12 p-0 flex-column grid m-0">
+          <div class="grid flex-row col-12 pr-0">
+            <div class="col-12 sm:col-6 md:col-6 lg:col-3 xl:col-2 pr-0 sm:pr-2">
+              <p-floatLabel>
+                <input class="w-full" pInputText id="razonSocial" placeholder="Razón Social" />
+                <label for="razonSocial">Razón Social</label>
+              </p-floatLabel>
             </div>
 
-            
-        </form>
-        
-        <div class="search-page__container__body">
-            <tabla-gestion-comprobantes></tabla-gestion-comprobantes>
+            <div class="col-12 sm:col-6 md:col-6 lg:col-3 xl:col-2 pr-0 sm:pr-2">
+              <p-floatLabel>
+                <input class="w-full" pInputText [pKeyFilter]="nroComprobantePattern" />
+                <label>Nro. Comprobante</label>
+              </p-floatLabel>
+            </div>
+
+            <div class="col-12 sm:col-6 md:col-6 lg:col-3 xl:col-2 pr-0 sm:pr-2">
+              <p-calendar styleClass="w-full" dateFormat="dd.mm.yy" inputId="icondisplay" placeholder="Fecha Carga"
+                [readonlyInput]="true" [iconDisplay]="'input'" [showIcon]="true" />
+            </div>
+
+            <div class="col-12 sm:col-6 md:col-6 lg:col-3 xl:col-2 pr-0 sm:pr-2">
+              <p-calendar styleClass="w-full" dateFormat="dd.mm.yy" inputId="icondisplay" placeholder="Fecha Pago"
+                [readonlyInput]="true" [iconDisplay]="'input'" [showIcon]="true" />
+            </div>
+
+
+            <div class="col-12 sm:col-6 md:col-6 lg:col-3 xl:col-2 pr-0 sm:pr-2">
+              <p-dropdown styleClass="w-full" optionLabel="name" placeholder="Caja" />
+            </div>
+
+
+            <div class="col-12 sm:col-6 md:col-6 lg:col-3 xl:col-2 pr-0 sm:pr-2">
+              <p-dropdown styleClass="w-full" optionLabel="name" placeholder="Estado" />
+            </div>
+          </div>
+
+          <div class="col-12">
+            <div class="flex flex-row gap-3">
+              <button class="layout-gestion-comprobante__btn-buscar">Buscar</button>
+              <button class="layout-gestion-comprobante__btn-limpiar">Limpiar</button>
+            </div>
+          </div>
         </div>
-        
+        <div class="col-12 flex justify-content-center">
+          <p-button label="Cargar Comprobante" icon="pi pi-plus" class="layout-gestion-comprobante__btn-cargar h-full"
+            styleClass="p-button-warning" routerLink="subir-factura" />
+        </div>
+      </div>
+    </form>
+
+    <div class="search-page__container__body pt-3">
+      <tabla-gestion-comprobantes [isLoading]="isLoading()" [products]="products()" [selectedProducts]="facturasSeleccionadas()" (checkProduct)="onCheckboxChange($event)"></tabla-gestion-comprobantes>
     </div>
+
+  </div>
+
+  @if (facturasSeleccionadas().length > 0) {
+    <div class="search-page__selected-receipts fadein">
+      <form [formGroup]="selectedState">
+        <div class="bar">
+          <div class="bar-close">
+            <p-button (onClick)="closeBar()" icon="pi pi-times" aria-label="Save" />
+          </div>
+          <div class="text">{{ getReceiptText }} <i class="pi pi-pause px-2"></i> <span>Cambiar estado a</span></div>
+          <div class="select-option">
+            <p-dropdown styleClass="w-full" (onChange)="updateState()" formControlName="state" [options]="allowedStates" optionValue="value" optionLabel="text">
+              <ng-template pTemplate="selectedItem">
+                @if (selectedState.get('state')!.value) {
+                  <div class="flex align-items-center gap-2" >
+                    <div [class]="'p-tag tag-uppercase ' + productService.getStateTag(selectedState.get('state')!.value!)">{{ productService.getStateText(selectedState.get('state')!.value!) }}</div>
+                  </div>
+                }
+              </ng-template>
+              <ng-template let-state pTemplate="allowedStates">
+                <div class="flex align-items-center gap-2">
+                  <div [class]="'p-tag tag-uppercase ' + productService.getStateTag(state.value)">{{ state.text }}</div>
+                </div>
+              </ng-template>
+
+            </p-dropdown>
+          </div>
+        </div>
+      </form>
+
+    </div>
+  }
 </div>
