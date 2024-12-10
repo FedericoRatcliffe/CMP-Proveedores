@@ -22,7 +22,7 @@ import { TablaFormularioCargaPdfComponent } from '../tabla-formulario-carga-pdf/
 
 // import dayjs from 'dayjs';
 
-// import { addDays, parse, format, isBefore } from 'date-fns';
+import { addDays, parse, format, isBefore, subDays } from 'date-fns';
 
 
 
@@ -60,7 +60,7 @@ import { TablaFormularioCargaPdfComponent } from '../tabla-formulario-carga-pdf/
 export class FormularioCargaPdfComponent implements OnInit, OnChanges {
 
   @Input() datosComprobante: any; // Recibe los datos del comprobante
-  
+
   // CARD Y WARNINGS
   razonSocialCard: string = 'RAZÓN SOCIAL';
   cuitEmisor: string = 'xxxxxxxxxxx';
@@ -92,11 +92,11 @@ export class FormularioCargaPdfComponent implements OnInit, OnChanges {
   esMSG: boolean = false;
   nombreArchivoEmail: string | null = null;
 
-  
+
 
   constructor(private fb: FormBuilder, private _comprobanteService: ComprobanteService, private _dialogService: DialogService) {
     this.formEnviarFactura = this.fb.group({
-      
+
       tipoComprobante: [null, [Validators.required]],
 
       puntoVenta: [null, [Validators.required]],
@@ -130,7 +130,7 @@ export class FormularioCargaPdfComponent implements OnInit, OnChanges {
     });
 
   }
-  
+
 
   ngOnChanges(changes: SimpleChanges): void {
 
@@ -165,7 +165,7 @@ export class FormularioCargaPdfComponent implements OnInit, OnChanges {
       this.sugerirFechaPago();
     });
 
-    
+
     this.formEnviarFactura.get('facturaAbonada')?.valueChanges.subscribe(() => {
       this.sugerirFechaPago();
     });
@@ -176,7 +176,7 @@ export class FormularioCargaPdfComponent implements OnInit, OnChanges {
 
   //MAPEAR DATOS
   private mapearDatosAlFormulario(datos: any): void {
-    
+
     // Asignar los valores del comprobante a los campos del formulario
     this.formEnviarFactura.patchValue({
       tipoComprobante: datos.tipoComprobante ?? null,
@@ -220,7 +220,7 @@ export class FormularioCargaPdfComponent implements OnInit, OnChanges {
 
   }
 
-  
+
 
 
 
@@ -285,21 +285,22 @@ export class FormularioCargaPdfComponent implements OnInit, OnChanges {
 
 
 
-  
+
   //INICIALIZAR CUOTAS
   private inicializarCuotasPorDefecto(): void {
 
     const montoTotal = this.formEnviarFactura.get('total')?.value || 0; // obtiene el monto total
     const fechaEmision = this.formEnviarFactura.get('fechaEmision')?.value || new Date(); // fecha de emision
-    
+
     this.numCuotas = 1; // inicia con 1 cuota
     this.primerCuota = montoTotal; // la unica cuota es igual al total
-    this.primerVencimiento = new Date(fechaEmision); // vencimiento basado en fecha de emision
-    
+    //this.primerVencimiento = new Date(fechaEmision); // vencimiento basado en fecha de emision
+    this.primerVencimiento = this.operarFecha(fechaEmision, 30, 'suma');
+
     // Ajustar el vencimiento: por ejemplo, sumar 30 días
-    this.primerVencimiento.setDate(this.primerVencimiento.getDate() + 30);
+    //this.primerVencimiento.setDate(this.primerVencimiento.getDate() + 30);
   }
-  
+
   //DIALOG
   editarCuotas(event: any) {
 
@@ -371,21 +372,15 @@ export class FormularioCargaPdfComponent implements OnInit, OnChanges {
   }
 
 
-
-
-
-
-
-  
   //LOGICA FECHA DE PAGO
   private sugerirFechaPago(): void {
     const fechaCarga = new Date();fechaCarga.setHours(0, 0, 0, 0);  // Fecha actual como fecha de carga
     const fechaVencimientoControl = this.formEnviarFactura.get('fechaVencimiento');
     const facturaAbonada = this.formEnviarFactura.get('facturaAbonada')?.value;
-  
+
     // Validar si existen datos suficientes
     const hayDatosSuficientes = !!this.formEnviarFactura.get('total')?.value;
-  
+
     if (!hayDatosSuficientes) {
       // Si no hay datos, limpiar la fecha de pago
       this.formEnviarFactura.patchValue({
@@ -394,24 +389,24 @@ export class FormularioCargaPdfComponent implements OnInit, OnChanges {
       console.log('No hay datos suficientes para sugerir fecha de pago.');
       return;
     }
-  
+
     // Si la factura ya está abonada, no se hace sugerencia
     if (facturaAbonada) {
       console.log('Factura abonada: No se sugiere fecha de pago.');
       return;
     }
-  
+
     const fechaVencimiento = fechaVencimientoControl?.value
     ? new Date(fechaVencimientoControl.value.split('/').reverse().join('-') + 'T00:00:00')
     : null;
-    
-  
+
+
     // Calcula fechaCarga + 15 días
     const fechaCargaMas15Dias = new Date(fechaCarga);
     fechaCargaMas15Dias.setDate(fechaCargaMas15Dias.getDate() + 15);
-  
+
     let fechaSugerida;
-  
+
     if (fechaVencimiento) {
       // Usa la fecha de vencimiento si es anterior a fechaCarga + 15 días
       fechaSugerida = fechaVencimiento < fechaCargaMas15Dias ? fechaVencimiento : fechaCargaMas15Dias;
@@ -419,16 +414,21 @@ export class FormularioCargaPdfComponent implements OnInit, OnChanges {
       // Si no hay fecha de vencimiento, usa fechaCarga + 15 días
       fechaSugerida = fechaCargaMas15Dias;
     }
-  
+
     // Asignar la fecha sugerida al campo fechaPago
     this.formEnviarFactura.patchValue({
       fechaPago: fechaSugerida,
     });
-  
+
     console.log('Fecha sugerida de pago:', fechaSugerida.toLocaleDateString());
   }
-  
 
-  
+
+  private operarFecha(dateString: string, dias: number, operacion: 'suma' | 'resta'): Date {
+    const date = parse(dateString, 'dd/MM/yyyy', new Date());
+    const result = operacion === 'suma' ? addDays(date, dias) : subDays(date, dias);
+
+    return result;
+  }
 
 }

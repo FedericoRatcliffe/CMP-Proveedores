@@ -30,14 +30,14 @@
 
                     <p-inputGroup class="col-12 xl:col-8 p-0">
 
-                        <input 
-                            class="w-full" 
+                        <input
+                            class="w-full"
                             (keyup.enter)="formObtenerProveedor.valid ? buscarProveedor() : null"
-                            formControlName="cadena" 
+                            formControlName="cadena"
                             pInputText
-                            pTooltip="Ingrese cualquier parte del Cuit o Razón Social del proveedor a buscar" 
+                            pTooltip="Ingrese cualquier parte del Cuit o Razón Social del proveedor a buscar"
                             placeholder="CUIT o Razón Social del Proveedor"
-                            type="text" 
+                            type="text"
                         />
 
                         <button (click)="buscarProveedor()" [disabled]="!formObtenerProveedor.valid"
@@ -113,13 +113,13 @@
 
                     <!-- LINEA 1 -->
                     <div class="col-12">
-                        <p-dropdown class="w-full" styleClass="w-full" 
+                        <p-dropdown class="w-full" styleClass="w-full"
                             [options]="tipoComprobante"
-                            (ngModel)="selectedTipoComprobante" 
-                            optionLabel="name" 
-                            [filter]="true" 
+                            (ngModel)="selectedTipoComprobante"
+                            optionLabel="name"
+                            [filter]="true"
                             filterBy="name"
-                            [showClear]="true" 
+                            [showClear]="true"
                             formControlName="tipoComprobante"
                             placeholder="Tipo de Comprobante"
                             appendTo="body"
@@ -195,24 +195,30 @@
 
                     <!-- LINEA 5 -->
                     <div class="col-6">
+                      <p-floatLabel>
                         <p-calendar inputStyleClass="w-full" styleClass="w-full" class="w-full" formControlName="fechaEmision"
                             placeholder="Fecha de Emisión" dateFormat="dd/mm/yy" [iconDisplay]="'input'"
                             [showIcon]="true" inputId="fechaEmision" />
+                        <label for="fechaEmision">Fecha de Emisión</label>
+                      </p-floatLabel>
                     </div>
 
                     <div class="col-6">
+                      <p-floatLabel>
                         <p-calendar inputStyleClass="w-full" styleClass="w-full" class="w-full" formControlName="fechaVencimiento"
-                            placeholder="Fecha de Vencimiento" dateFormat="dd/mm/yy" [iconDisplay]="'input'"
-                            [showIcon]="true" inputId="fechaVencimiento" />
+                        placeholder="Fecha de Vencimiento" dateFormat="dd/mm/yy" [iconDisplay]="'input'"
+                        [showIcon]="true" inputId="fechaVencimiento" />
+                        <label for="fechaVencimiento">Fecha de Vencimiento</label>
+                      </p-floatLabel>
                     </div>
 
 
                     <!-- LINEA 6 -->
                     <div class="col-6">
                         <div class="flex flex-row align-items-center justify-content-end gap-2 h-full">
-                            <p-checkbox 
-                                formControlName="facturaAbonada" 
-                                value="abonada" 
+                            <p-checkbox
+                                formControlName="facturaAbonada"
+                                value="abonada"
                                 inputId="facturaAbonada"
                             />
                             <label for="facturaAbonada">Factura Abonada</label>
@@ -222,16 +228,19 @@
 
 
                     <div class="col-6">
-                        <p-calendar 
-                            class="w-full" styleClass="w-full" 
+                      <p-floatLabel>
+                        <p-calendar
+                            class="w-full" styleClass="w-full"
                             formControlName="fechaPago"
-                            placeholder="Fecha de Pago" 
-                            dateFormat="dd/mm/yy" 
-                            [iconDisplay]="'input'" 
+                            placeholder="Fecha de Pago"
+                            dateFormat="dd/mm/yy"
+                            [iconDisplay]="'input'"
                             [showIcon]="true"
-                            inputId="fechaPago" 
-                            appendTo="body" 
-                        />
+                            inputId="fechaPago"
+                            appendTo="body"
+                            />
+                          <label for="fechaPago">Fecha de Pago</label>
+                      </p-floatLabel>
                     </div>
 
 
@@ -266,21 +275,21 @@
             <div class="formulario-carga-pdf__top__cuotas-tablas--cuotas">
 
                 <!-- CUOTAS -->
-                <div class="grid m-0">                    
-                    
+                <div class="grid m-0">
+
                     <div class="layout-cuotas col-6">
                         <div class="flex flex-column gap-2">
 
                             <span>Cant. Cuotas: <strong>{{ numCuotas }}</strong></span>
-                            
+
                             <span>Importe 1° Cuota: <strong>{{ primerCuota | currency:'USD' }}</strong></span>
-                            
+
                             <span>1er. Venc.: <strong>{{ primerVencimiento | date:'dd/MM/yyyy' }}</strong></span>
                         </div>
                     </div>
 
                 </div>
-                
+
                 <div class="pt-3">
                     <button class="btn-cuotas" (click)="editarCuotas($event)">
                         <img src="assets/icons/plus.svg" width="16" height="16" alt="">Cuotas
@@ -306,18 +315,18 @@
                         <img src="assets/icons/upload-arrow.svg" width="13" height="14" alt="">
                         Subir Email
                     </button>
-                
+
                     <form [formGroup]="formEmail">
                         <input type="file" formControlName="email" #inputReferenceEmail hidden (change)="onFileInputChange($event, 'msg')">
                     </form>
-                
+
                     <div *ngIf="nombreArchivoEmail" class="seleccionador-archivos">
                         <img src="assets/icons/email-icon.svg" *ngIf="esMSG" class="mr-2" width="14" height="18" viewBox="0 0 15 18" fill="none" alt="">
                         {{ nombreArchivoEmail }}
                     </div>
-                
+
                 </div>
-                
+
                 <span class="formato-permitido-txt mt-1">Formato permitido: .msg</span>
             </div>
             <hr class="m-0">
