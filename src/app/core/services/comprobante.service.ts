@@ -9,10 +9,10 @@ import { CentroCostoResponse } from '../interfaces/centroDeCostoResponse.interfa
   providedIn: 'root'
 })
 export class ComprobanteService {
-  
-  private baseUrl: string = 'https://apicmptest.cooperacionseguros.com.ar/wsproveedores';
+
+  private baseUrl: string = 'https://wsproveedorestest.cooperacionseguros.com.ar/api';
   private tokenUrl: string = 'https://wssecuritytest.cooperacionseguros.com.ar/token';
-  
+
   constructor(private http: HttpClient) { }
 
   private getToken(): Observable<string> {
@@ -59,7 +59,7 @@ export class ComprobanteService {
   }
 
 
-  
+
   // --------------------------------------------------------------------
   // BUSCAR PROVEEDOR
   obtenerProveedor(tipo: string, cadena: string): Observable<any> {
@@ -80,6 +80,14 @@ export class ComprobanteService {
       })
     );
   }
+
+
+
+
+
+
+
+  
   // --------------------------------------------------------------------
   // BUSCAR TIPOS DE COMPROBANTES AFIP
   obtenerTiposComprobantesAFIP(): Observable<TipoComprobanteAFIP[]> {
@@ -100,6 +108,13 @@ export class ComprobanteService {
       )
     );
   }
+
+
+
+
+
+
+
   // --------------------------------------------------------------------
   // OBTENER COSTOS IMPUTACION CONTABLE
   obtenerCentroDeCostos(termino: string): Observable<CentroCostoResponse[]> {
@@ -111,7 +126,7 @@ export class ComprobanteService {
 
         const params = new HttpParams().set('Cadena', termino); // Parámetro esperado por la API
 
-        const url = `${this.baseUrl}/CentroDeCostos/ObtenerCentroDeCostos`;
+        const url = `${this.baseUrl}/CentroDeCostos`;
 
         return this.http.get<any[]>(url, { headers, params });
       })
@@ -124,32 +139,30 @@ export class ComprobanteService {
         const headers = new HttpHeaders({
           'Authorization': `Bearer ${token}`
         });
-  
+
         const params = new HttpParams().set('Cadena', termino);
-  
-        const url = `${this.baseUrl}/CentroDeImputacion/ObtenerCentrosDeImputacion`;
-  
+
+        const url = `${this.baseUrl}/CentroDeImputacion`;
+
         return this.http.get<any[]>(url, { headers, params });
       })
     );
   }
-  
-  obtenerCuentaContable(termino: string): Observable<any[]> {
-    return this.getToken().pipe(
-      switchMap(token => {
-        const headers = new HttpHeaders({
-          'Authorization': `Bearer ${token}`
-        });
-        
-        const params = new HttpParams().set('Cadena', termino).set('IdAplicacion', '1');
-  
-        const url = `${this.baseUrl}/CuentasContables/ObtenerCuentaContable`;
-  
-        return this.http.get<any[]>(url, { headers, params });
-      })
-    );
+
+
+  obtenerCuentaContable(): Observable<any[]> {
+    const token = 'eyJhbGciOiJodHRwOi8vd3d3LnczLm9yZy8yMDAxLzA0L3htbGRzaWctbW9yZSNobWFjLXNoYTI1NiIsInR5cCI6IkpXVCJ9.eyJuYW1laWQiOiJlcGF1dGFzc28iLCJqdGkiOiJjYWRlMTMwNy04ZmE3LTRiMTMtOTc3OS01N2MzYWNlMTI5YWIiLCJmYW1pbHlfbmFtZSI6IkV6ZXF1aWVsIFBhdXRhc3NvIiwiaHR0cDovL3NjaGVtYXMubWljcm9zb2Z0LmNvbS93cy8yMDA4LzA2L2lkZW50aXR5L2NsYWltcy9yb2xlIjoiUFJWX1NHSV9Db21wcm9iYW50ZXNfQ3RhQ3RibGVTdXBlcnZpc29yX1Zpc3VhbGl6YXIiLCJleHAiOjE3MzYzMzU1NDgsImlzcyI6ImNvb3BlcmFjaW9uc2VndXJvcy5jb20iLCJhdWQiOiJjb29wZXJhY2lvbnNlZ3Vyb3MuY29tIn0.uAJ4qDmH1gaMKow8ZlQjOHlP_r9KVubtXUTSpsGw5Q4';
+
+    const headers = new HttpHeaders({
+      'Authorization': `Bearer ${token}`
+    });
+
+    const url = `${this.baseUrl}/CuentasContables`;
+
+    return this.http.get<any[]>(url, { headers });
   }
-  
+
+
 
 
 

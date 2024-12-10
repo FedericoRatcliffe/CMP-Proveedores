@@ -3,10 +3,15 @@
 <div class="search-page">
     <div class="search-page__container">
 
+        <div class=""> 
+            <button  pButton pRipple class="layout-gestion-comprobante__btn-cargar h-full" routerLink="/subir-factura">Cargar Comprobante</button>
+        </div>
+        
         <form action="" class="search-page__container__header">
             <div class="search-page__container__header__filters grid">
 
-                <div class="flex col-10 flex-row">
+                <div class="flex col-12 flex-row p-0 pt-2">
+
                     <div class="col-12 sm:col-6 md:col-6 lg:col-3 xl:col-2">
                         <p-floatLabel>
                             <input class="w-full" pInputText id="razonSocial" placeholder="Razón Social" />
@@ -43,9 +48,9 @@
                         <p-dropdown styleClass="w-full" optionLabel="name" placeholder="Estado" />
                     </div>
                 </div>
-                <div class="col-2 p-0"> 
-                    <button  pButton pRipple class="layout-gestion-comprobante__btn-cargar h-full" routerLink="subir-factura">Cargar Comprobante</button>
-                </div>
+
+                
+
 
 
                 <div class="flex flex-row">

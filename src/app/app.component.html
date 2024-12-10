@@ -1,1 +1,12 @@
-<router-outlet></router-outlet>
+<div class="container">
+    @if(!isProd)
+    {
+        <div class="version">
+            <span class="ml-2">Versión: {{version}}</span>
+        </div>
+    }
+
+
+    
+    <router-outlet></router-outlet>
+</div>

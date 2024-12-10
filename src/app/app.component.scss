@@ -1,0 +1,13 @@
+.container {
+    position: relative;
+}
+
+.version {
+    position: absolute;
+    top: 0.125rem;
+    right: .5rem;
+    color: black;
+    z-index: 10;
+}
+
+

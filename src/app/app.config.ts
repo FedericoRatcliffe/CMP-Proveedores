@@ -1,15 +1,39 @@
-import { ApplicationConfig, provideZoneChangeDetection } from '@angular/core';
+import { ApplicationConfig, importProvidersFrom, provideZoneChangeDetection } from '@angular/core';
 import { provideRouter } from '@angular/router';
 
 import { routes } from './app.routes';
-import { provideHttpClient } from '@angular/common/http';
+import { HTTP_INTERCEPTORS, provideHttpClient, withInterceptorsFromDi } from '@angular/common/http';
 import { provideAnimationsAsync } from '@angular/platform-browser/animations/async';
+import { ApmModule } from '@elastic/apm-rum-angular';
+import { JWT_OPTIONS, JwtModule } from '@auth0/angular-jwt';
+import { NgxPermissionsModule } from 'ngx-permissions';
+import { HttpRequestInterceptor } from './core/interceptors/http-request.interceptor';
+import { provideClientHydration } from '@angular/platform-browser';
 
 export const appConfig: ApplicationConfig = {
   providers: [
-    provideZoneChangeDetection({ eventCoalescing: true }), 
+    importProvidersFrom(
+      ApmModule,
+    ),
     provideRouter(routes),
-    provideAnimationsAsync(), 
-    provideHttpClient()
+    importProvidersFrom(
+      JwtModule.forRoot({
+      }),
+    ),
+    importProvidersFrom(
+      NgxPermissionsModule.forRoot({
+      }),
+    ),
+    { provide: JWT_OPTIONS, useValue: JWT_OPTIONS },
+    provideHttpClient(
+      withInterceptorsFromDi()
+    ),
+    {
+      provide: HTTP_INTERCEPTORS,
+      useClass: HttpRequestInterceptor,
+      multi: true
+    },
+    provideClientHydration(),
+    provideAnimationsAsync()
   ]
 };

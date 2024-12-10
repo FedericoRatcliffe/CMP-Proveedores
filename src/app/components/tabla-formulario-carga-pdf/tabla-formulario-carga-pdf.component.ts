@@ -175,6 +175,8 @@ export class TablaFormularioCargaPdfComponent {
     row.centroImputacion = event;
   }
 
+
+  
   buscarCuentasContables(event: any) {
     const query = event.query;
     if (query.length < 3) {
@@ -182,7 +184,7 @@ export class TablaFormularioCargaPdfComponent {
       return;
     }
     this.errorCuentasContables = false;
-    this.comprobanteService.obtenerCuentaContable(query).subscribe(data => {
+    this.comprobanteService.obtenerCuentaContable().subscribe(data => {
       this.suggestionsCuentasContables = data;
     });
   }

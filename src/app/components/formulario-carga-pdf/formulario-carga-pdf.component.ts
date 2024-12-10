@@ -4,6 +4,7 @@ import { CurrencyPipe, DatePipe, NgIf } from '@angular/common';
 
 import { ButtonModule } from 'primeng/button';
 import { CalendarModule } from 'primeng/calendar';
+import { CheckboxModule } from 'primeng/checkbox';
 import { DialogService, DynamicDialogRef } from 'primeng/dynamicdialog';
 import { DropdownModule } from 'primeng/dropdown';
 import { FloatLabelModule } from 'primeng/floatlabel';
@@ -12,12 +13,13 @@ import { InputGroupModule } from 'primeng/inputgroup';
 import { InputNumber, InputNumberModule } from 'primeng/inputnumber';
 import { InputTextModule } from 'primeng/inputtext';
 import { SkeletonModule } from 'primeng/skeleton';
-import { CheckboxModule } from 'primeng/checkbox';
+import { TooltipModule } from 'primeng/tooltip';
 
 import { ComprobanteService } from '../../core/services/comprobante.service';
 import { TipoComprobanteAFIP } from '../../core/interfaces/tipoComprobanteAFIP.interface';
 import { CuotasComponent } from '../dialog/cuotas/cuotas.component';
 import { TablaFormularioCargaPdfComponent } from '../tabla-formulario-carga-pdf/tabla-formulario-carga-pdf.component';
+
 
 
 @Component({
@@ -31,6 +33,7 @@ import { TablaFormularioCargaPdfComponent } from '../tabla-formulario-carga-pdf/
 
     ButtonModule,
     CalendarModule,
+    CheckboxModule,
     DropdownModule,
     FloatLabelModule,
     InputGroupAddonModule,
@@ -38,9 +41,9 @@ import { TablaFormularioCargaPdfComponent } from '../tabla-formulario-carga-pdf/
     InputNumberModule,
     InputTextModule,
     SkeletonModule,
-    CheckboxModule,
+    TooltipModule,
 
-    TablaFormularioCargaPdfComponent
+    TablaFormularioCargaPdfComponent,
 ],
   providers:[
     ComprobanteService,
@@ -52,7 +55,7 @@ import { TablaFormularioCargaPdfComponent } from '../tabla-formulario-carga-pdf/
 export class FormularioCargaPdfComponent implements OnInit, OnChanges {
 
   @Input() datosComprobante: any; // Recibe los datos del comprobante
-
+  
   // CARD Y WARNINGS
   razonSocialCard: string = 'RAZÓN SOCIAL';
   cuitEmisor: string = 'xxxxxxxxxxx';
@@ -143,7 +146,7 @@ export class FormularioCargaPdfComponent implements OnInit, OnChanges {
   }
 
   private validarCuitReceptor(): void {
-    const cuitCooperacion = '30500047174'; // CUIT esperado para Cooperación Seguros
+    const cuitCooperacion = '30500047174'; // CUIT esperado
     this.mostrarCuitReceptorNoCooperacionWarning = this.cuitReceptor !== cuitCooperacion && !!this.cuitReceptor;
     this.mostrarCuitReceptorCooperacionWarning = this.cuitReceptor === cuitCooperacion;
   }
@@ -156,6 +159,8 @@ export class FormularioCargaPdfComponent implements OnInit, OnChanges {
     this.formEnviarFactura.get('fechaVencimiento')?.valueChanges.subscribe(() => {
       this.sugerirFechaPago();
     });
+
+    
     this.formEnviarFactura.get('facturaAbonada')?.valueChanges.subscribe(() => {
       this.sugerirFechaPago();
     });
@@ -176,7 +181,7 @@ export class FormularioCargaPdfComponent implements OnInit, OnChanges {
       iva: datos.iva ?? null,
       otrosImpuestos: datos.otrosImpuestos ?? null,
       total: datos.total ?? null,
-      fechaEmision: datos.fechaEmision ? new Date(datos.fechaEmision) : null,
+      fechaEmision: datos.fechaEmision || null,
       fechaVencimiento: datos.fechaVencimiento,
       facturaAbonada: datos.facturaAbonada ?? false,
       fechaPago: datos.fechaPago ? new Date(datos.fechaPago) : null,
@@ -189,7 +194,7 @@ export class FormularioCargaPdfComponent implements OnInit, OnChanges {
   }
 
 
-
+  //EMAIL MSG
   onFileInputChange(event: Event, fileType:'msg'): void {
 
     const input = event.target as HTMLInputElement;
@@ -217,7 +222,7 @@ export class FormularioCargaPdfComponent implements OnInit, OnChanges {
   // BUSCAR PROVEEDOR LLENAR CARD
   buscarProveedor() {
 
-    const tipo = '01'; // Tipo fijo para identificar la busqueda
+    const tipo = '01'; // Valor que se manda hardcodiado obligatorio
     const cadena = this.formObtenerProveedor.get('cadena')?.value;
 
 
@@ -278,6 +283,7 @@ export class FormularioCargaPdfComponent implements OnInit, OnChanges {
   
   //INICIALIZAR CUOTAS
   private inicializarCuotasPorDefecto(): void {
+
     const montoTotal = this.formEnviarFactura.get('total')?.value || 0; // obtiene el monto total
     const fechaEmision = this.formEnviarFactura.get('fechaEmision')?.value || new Date(); // fecha de emision
     
@@ -358,6 +364,13 @@ export class FormularioCargaPdfComponent implements OnInit, OnChanges {
 
     return cuotas;
   }
+
+
+
+
+
+
+
 
   //LOGICA FECHA DE PAGO
   private sugerirFechaPago(): void {

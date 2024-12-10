@@ -30,9 +30,15 @@
 
                     <p-inputGroup class="col-12 xl:col-8 p-0">
 
-                        <input class="w-full" (keyup.enter)="formObtenerProveedor.valid ? buscarProveedor() : null"
-                            formControlName="cadena" pInputText placeholder="CUIT o Razón Social del Proveedor"
-                            type="text" />
+                        <input 
+                            class="w-full" 
+                            (keyup.enter)="formObtenerProveedor.valid ? buscarProveedor() : null"
+                            formControlName="cadena" 
+                            pInputText
+                            pTooltip="Ingrese cualquier parte del Cuit o Razón Social del proveedor a buscar" 
+                            placeholder="CUIT o Razón Social del Proveedor"
+                            type="text" 
+                        />
 
                         <button (click)="buscarProveedor()" [disabled]="!formObtenerProveedor.valid"
                             class="p-button-warning" icon="pi pi-search" pButton style="color: white;" type="button">
@@ -190,7 +196,7 @@
                     <!-- LINEA 5 -->
                     <div class="col-6">
                         <p-calendar inputStyleClass="w-full" styleClass="w-full" class="w-full" formControlName="fechaEmision"
-                            placeholder="Fecha de Emisión" dateFormat="mm/dd/yy" [iconDisplay]="'input'"
+                            placeholder="Fecha de Emisión" dateFormat="dd/mm/yy" [iconDisplay]="'input'"
                             [showIcon]="true" inputId="fechaEmision" />
                     </div>
 
@@ -233,9 +239,6 @@
 
             </div>
 
-
-
-
         </div>
 
 
@@ -277,15 +280,16 @@
                     </div>
 
                 </div>
-
+                
                 <div class="pt-3">
                     <button class="btn-cuotas" (click)="editarCuotas($event)">
                         <img src="assets/icons/plus.svg" width="16" height="16" alt="">Cuotas
                     </button>
                 </div>
-                             
 
             </div>
+
+
 
 
             <div class="formulario-carga-pdf__top__cuotas-tabla--tabla mt-3">
