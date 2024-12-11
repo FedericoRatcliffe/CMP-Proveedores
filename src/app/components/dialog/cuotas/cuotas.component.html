@@ -1,6 +1,6 @@
 <form [formGroup]="formCuotas" class="card-cuotas grid m-0">
 
-  
+
   <div class="flex flex-row w-full justify-content-between">
 
     <p-floatLabel>
@@ -11,7 +11,7 @@
         inputId="montoTotal"
         locale="en-US"
         mode="currency"
-        formControlName="montoTotal" 
+        formControlName="montoTotal"
       ></p-inputNumber>
       <label for="number-input">Monto Total Factura</label>
     </p-floatLabel>
@@ -45,16 +45,20 @@
       </p-floatLabel>
 
 
+    <p-floatLabel>
       <p-calendar
-        placeholder="Vencimiento"
-        dateFormat="dd/mm/yy"
-        [showIcon]="true"
-        formControlName="vencimiento"
-        appendTo="body"
+      placeholder="Vencimiento"
+      dateFormat="dd/mm/yy"
+      [showIcon]="true"
+      formControlName="vencimiento"
+      appendTo="body"
+      inputId="vencimiento"
       ></p-calendar>
+      <label for="vencimiento">Vencimiento</label>
+    </p-floatLabel>
     </div>
   </div>
-  
+
 
 </form>
 
@@ -77,7 +81,7 @@
         inputId="integeronly"
         locale="en-US"
         mode="currency"
-        formControlName="montoTotal" 
+        formControlName="montoTotal"
       ></p-inputNumber>
       <label for="number-input">Monto Total Factura</label>
     </p-floatLabel>

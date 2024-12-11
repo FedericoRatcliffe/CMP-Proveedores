@@ -14,9 +14,9 @@ import { FormularioCargaPdfComponent } from "../../components/formulario-carga-p
   styleUrl: './carga-comprobante.component.scss'
 })
 export class CargaComprobanteComponent {
-  
-  datosExtraidos: any; // se almacenan los datos del comprobante
-  
+
+  datosExtraidos: any;
+
   onDatosComprobanteRecibidos(datos: any): void {
     console.log('Datos recibidos del PDF:', datos);
     this.datosExtraidos = datos;

@@ -7,6 +7,7 @@ import { CalendarModule } from 'primeng/calendar';
 import { DynamicDialogConfig, DynamicDialogRef } from 'primeng/dynamicdialog';
 import { FloatLabelModule } from 'primeng/floatlabel';
 import { InputNumberModule } from 'primeng/inputnumber';
+import { operarFecha } from '../../../core/helpers/operar-fecha.helper';
 
 @Component({
   selector: 'app-cuotas',
@@ -26,22 +27,21 @@ import { InputNumberModule } from 'primeng/inputnumber';
   styleUrl: './cuotas.component.scss'
 })
 export class CuotasComponent implements OnInit {
-  
+
   formCuotas: FormGroup;
 
   constructor(private fb: FormBuilder, private ref: DynamicDialogRef, private config: DynamicDialogConfig, private primengConfig: PrimeNGConfig) {
-    
     const total = this.config.data.total || 0;
     const fechaEmision = this.config.data.fechaEmision || new Date();
     const numCuotas = this.config.data.numCuotas || 1;
     const cuotas = this.config.data.cuotas || []; // Cargar cuotas existentes
-  
+
     this.formCuotas = this.fb.group({
       montoTotal: [{ value: total, disabled: true }], // Configurado como deshabilitado
       numCuotas: [numCuotas, [Validators.required, Validators.min(1), Validators.max(6)]],
       cuotas: this.fb.array([]), // FormArray dinámico para cuotas
     });
-  
+
     // Si existen cuotas previamente configuradas, utilizarlas; de lo contrario, inicializar por defecto
     if (cuotas.length > 0) {
       this.setCuotas(cuotas);
@@ -91,10 +91,9 @@ export class CuotasComponent implements OnInit {
       // Si es la última cuota, ajusta para compensar el redondeo
       const monto = i === num - 1 ? total - sumaParcial : montoPorCuota;
       sumaParcial += monto;
-
       // Calcula la fecha de vencimiento: suma `i` meses a la fecha de emisión
       const vencimiento = fechaEmision
-        ? new Date(fechaEmision.getFullYear(), fechaEmision.getMonth() + 1 + i, fechaEmision.getDate())
+        ? operarFecha(fechaEmision, i + 1, 'suma', false)
         : null;
 
       this.cuotas.push(
@@ -115,7 +114,7 @@ export class CuotasComponent implements OnInit {
       this.updateCuotas(num, fechaEmision);
     }
   }
-  
+
 
   // Método para manejar el submit (opcional)
   onSubmit(): void {
@@ -143,6 +142,6 @@ export class CuotasComponent implements OnInit {
       console.error('Formulario inválido');
     }
   }
-  
+
 }
 
