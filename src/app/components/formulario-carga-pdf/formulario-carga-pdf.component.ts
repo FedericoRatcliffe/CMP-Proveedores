@@ -54,19 +54,19 @@ import { operarFecha } from '../../core/helpers/operar-fecha.helper';
   styleUrl: './formulario-carga-pdf.component.scss'
 })
 export class FormularioCargaPdfComponent implements OnInit, OnChanges {
-
+  
   @Input() datosComprobante: any;
 
   // Información de la tarjeta
-  razonSocialCard = 'RAZÓN SOCIAL'; // Texto predeterminado para la tarjeta de razón social. Asegúrese de actualizarlo dinámicamente cuando sea necesario.
-  cuitEmisor = 'xxxxxxxxxxx'; // CUIT del emisor, se actualiza al buscar el proveedor.
-  condIva = 'xxxx'; // Condición de IVA del emisor.
-  domicilio = 'xxxx'; // Domicilio del emisor.
+  razonSocialCard : string = 'RAZÓN SOCIAL'; // Texto predeterminado para la tarjeta de razón social. Asegúrese de actualizarlo dinámicamente cuando sea necesario.
+  cuitEmisor : string = 'xxxxxxxxxxx'; // CUIT del emisor, se actualiza al buscar el proveedor.
+  condIva : string = 'xxxx'; // Condición de IVA del emisor.
+  domicilio : string = 'xxxx'; // Domicilio del emisor.
 
   // Indicadores
-  isLoading = false; // Indica si hay una carga activa para mostrar un estado visual.
-  mostrarCuitReceptorNoCooperacionWarning = false; // Muestra advertencia si el CUIT receptor no es el esperado.
-  mostrarCuitReceptorCooperacionWarning = false; // Muestra advertencia si el CUIT receptor es el esperado.
+  isLoading : boolean = false; // Indica si hay una carga activa para mostrar un estado visual.
+  mostrarCuitReceptorNoCooperacionWarning : boolean = false; // Muestra advertencia si el CUIT receptor no es el esperado.
+  mostrarCuitReceptorCooperacionWarning : boolean = false; // Muestra advertencia si el CUIT receptor es el esperado.
 
   // Formularios
   formEnviarFactura: FormGroup; // Formulario principal para enviar factura.
@@ -206,8 +206,6 @@ export class FormularioCargaPdfComponent implements OnInit, OnChanges {
       console.warn('No se encontró ningún proveedor con los datos proporcionados.'); // Muestra un aviso si no hay datos.
     }
   }
-
-
 
 
   private sugerirFechaPago(): void {
