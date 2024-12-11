@@ -9,7 +9,7 @@ import { ComprobanteService } from '../../core/services/comprobante.service';
   imports: [
     NgIf
   ],
-  providers:[
+  providers: [
     ComprobanteService
   ],
   templateUrl: './visualizar-carga-pdf.component.html',
@@ -17,75 +17,139 @@ import { ComprobanteService } from '../../core/services/comprobante.service';
 })
 export class VisualizarCargaPdfComponent implements OnInit {
 
-  @Output() datosComprobante: EventEmitter<any> = new EventEmitter(); // Emitirá los datos extraídos del PDF
+  @Output() datosComprobante = new EventEmitter<any>();
+  // @Output() datosComprobante = new EventEmitter<{ comprobanteAFIP: any }>();;
 
-  // PDF
-  esPDF: boolean = false;
-  esJPG: boolean = false;
+  esPDF = false;
+  esJPG = false;
 
   pdfSrc: SafeResourceUrl | null = null;
-  pdfFile: File | null = null;
-  
   nombreArchivo: string | null = null;
 
   constructor(
     private sanitizer: DomSanitizer,
-    private _comprobanteService: ComprobanteService
-  ) {}
+    private comprobanteService: ComprobanteService
+  ) { }
 
   ngOnInit(): void {
-    const pdfPath = '';
-    this.pdfSrc = this.sanitizer.bypassSecurityTrustResourceUrl(pdfPath);
+    this.limpiarPdfSource();
   }
 
-  onFileInputChange(event: Event, fileType: 'pdf' | 'jpg'): void {
+  handleFileInputChange(event: Event, fileType: 'pdf' | 'jpg'): void {
+    const archivo = this.getArchivoSeleccionado(event);
+
+    if (!archivo) return;
+
+    const extension = this.getExtensionArchivo(archivo);
+    if (!this.isTipoArchivoValido(fileType, extension)) {
+      alert(`Por favor, selecciona un archivo de tipo ${fileType.toUpperCase()}.`);
+      return;
+    }
+
+    this.nombreArchivo = archivo.name;
+    this.updateFileTypeFlags(extension);
+
+    this.esPDF ? this.procesarPDF(archivo) : this.procesarJPG(archivo);
+  }
+
+  // Restablece la fuente del PDF a una URL vacía y segura.
+  private limpiarPdfSource(): void {
+    this.pdfSrc = this.sanitizer.bypassSecurityTrustResourceUrl('');
+  }
+
+
+
+  // Recupera el archivo seleccionado del evento de entrada o devuelve null si no se selecciona ningún archivo.
+  private getArchivoSeleccionado(event: Event): File | null {
     const input = event.target as HTMLInputElement;
+    return input.files?.[0] || null;
+  }
 
-    if (input.files && input.files.length > 0) {
-      const archivo = input.files[0];
-      const extension = archivo.name.split('.').pop()?.toLowerCase();
 
-      // Validación para el input: acepta solo PDF o JPG
-      if ((fileType === 'pdf' || fileType === 'jpg') && (extension === 'pdf' || extension === 'jpg' || extension === 'jpeg')) {
-        this.nombreArchivo = archivo.name;
-        this.esPDF = extension === 'pdf';
-        this.esJPG = extension === 'jpg' || extension === 'jpeg';
 
-        if (this.esPDF) {
-          this.handlePDFFile(archivo); // Maneja la visualización del PDF
-        } else if (this.esJPG) {
-          const imageUrl = URL.createObjectURL(archivo); // Genera una URL para la imagen
-          this.pdfSrc = this.sanitizer.bypassSecurityTrustResourceUrl(imageUrl); // Almacena la URL segura en pdfSrc para mostrarla
-        }
-      } else {
-        alert(`Por favor, selecciona un archivo de tipo ${fileType.toUpperCase()}.`);
-      }
+  // Extrae la extensión del archivo del nombre para determinar su tipo.
+  private getExtensionArchivo(file: File): string {
+    return file.name.split('.').pop()?.toLowerCase() || '';
+  }
+
+
+
+  // Verifica si la extensión del archivo coincide con el tipo esperado (PDF o JPG).
+  private isTipoArchivoValido(fileType: 'pdf' | 'jpg', extension: string): boolean {
+    const validExtensions = ['pdf', 'jpg', 'jpeg'];
+    return fileType === 'pdf' || fileType === 'jpg'
+      ? validExtensions.includes(extension)
+      : false;
+  }
+
+
+
+  // Actualiza las banderas que indican si el archivo es un PDF o un JPG basado en su extensión.
+  private updateFileTypeFlags(extension: string): void {
+    this.esPDF = extension === 'pdf';
+    this.esJPG = ['jpg', 'jpeg'].includes(extension);
+  }
+
+
+
+  // Maneja el procesamiento y la carga de un archivo PDF.
+  private procesarPDF(file: File): void {
+    this.setRecursoSeguroURL(file);
+    this.subirPDF(file);
+  }
+
+
+
+  // Maneja el procesamiento y la visualización de un archivo de imagen JPG.
+  private procesarJPG(file: File): void {
+    const imageUrl = URL.createObjectURL(file);
+    this.pdfSrc = this.sanitizer.bypassSecurityTrustResourceUrl(imageUrl);
+    this.uploadJPG(file); // Envia el archivo JPG al backend
+  }
+
+  private setRecursoSeguroURL(file: File): void {
+    const url = URL.createObjectURL(file);
+    this.pdfSrc = this.sanitizer.bypassSecurityTrustResourceUrl(url);
+  }
+
+  private uploadJPG(file: File): void {
+    this.comprobanteService.enviarArchivoPDF(file).subscribe({
+      next: (response) => this.handleJPGRespuesta(response),
+      error: (error) => console.error('Error al enviar el archivo JPG:', error)
+    });
+  }
+
+  private handleJPGRespuesta(response: any): void {
+    if (response?.datosImagen) {
+      this.datosComprobante.emit(response.datosImagen);
+    } else {
+      console.warn('El archivo JPG no contiene datos esperados.');
     }
   }
 
-  private handlePDFFile(file: File): void {
-    this.pdfFile = file;
-    const url = URL.createObjectURL(file);
-    this.pdfSrc = this.sanitizer.bypassSecurityTrustResourceUrl(url);
 
-    // Llamada al servicio para enviar el archivo PDF
-    this._comprobanteService.enviarArchivoPDF(file).subscribe({
-      next: (response) => {
-        console.log('Archivo PDF enviado exitosamente:', response);
 
-        if (response && response.comprobanteAFIP) {
-          const comprobante = response.comprobanteAFIP;
 
-          // Emitimos los datos extraídos
-          this.datosComprobante.emit(comprobante);
-        } else {
-          console.warn('El archivo no contiene datos de comprobanteAFIP');
-        }
-      },
-      error: (error) => {
-        console.error('Error al enviar el archivo PDF:', error);
-      }
+  
+
+  // Sube el archivo PDF al servidor mediante una llamada al servicio.
+  private subirPDF(file: File): void {
+    this.comprobanteService.enviarArchivoPDF(file).subscribe({
+      next: (response) => this.handlePDFRespuesta(response),
+      error: (error) => console.error('Error al enviar el archivo PDF:', error)
     });
   }
+
+
+
+  // Procesa la respuesta del servidor para extraer y emitir los datos de comprobanteAFIP, si están disponibles.
+  private handlePDFRespuesta(response: any): void {
+    if (response?.comprobanteAFIP) {
+      this.datosComprobante.emit(response.comprobanteAFIP);
+    } else {
+      console.warn('El archivo no contiene datos de comprobanteAFIP');
+    }
+  }
+  
 }
 
