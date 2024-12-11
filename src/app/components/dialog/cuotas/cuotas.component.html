@@ -1,22 +1,29 @@
-<form [formGroup]="formCuotas" class="card-cuotas grid m-0">
+<form [formGroup]="formCuotas" class="card-cuotas">
 
-  
-  <div class="flex flex-row w-full justify-content-between">
+  <div class="grid m-0 w-full">
 
-    <p-floatLabel>
+    <div class="col-6">
+      <p-floatLabel>
+        <p-inputNumber
+          class="w-full"
+          styleClass="w-full"
+          inputStyleClass="w-full"
+          [readonly]="true"
+          currency="USD"
+          inputId="montoTotal"
+          locale="en-US"
+          mode="currency"
+          formControlName="montoTotal" 
+        ></p-inputNumber>
+        <label for="number-input">Monto Total Factura</label>
+      </p-floatLabel>
+    </div>
+
+    <div class="col-6">
       <p-inputNumber
-        class="w-full"
-        [readonly]="true"
-        currency="USD"
-        inputId="montoTotal"
-        locale="en-US"
-        mode="currency"
-        formControlName="montoTotal" 
-      ></p-inputNumber>
-      <label for="number-input">Monto Total Factura</label>
-    </p-floatLabel>
-
-    <p-inputNumber
+      class="w-full"
+      styleClass="w-full"
+      inputStyleClass="w-full"
       mode="decimal"
       placeholder="Cant. Cuotas"
       [showButtons]="true"
@@ -24,38 +31,54 @@
       [min]="1"
       [max]="6"
       formControlName="numCuotas"
-      (onInput)="onNumCuotasChange($event)"
-    ></p-inputNumber>
+      (onInput)="onNumCuotasChange($event)">
+    </p-inputNumber>
+    </div>
 
   </div>
 
-  <div formArrayName="cuotas" class="flex flex-column w-full">
-    <div *ngFor="let cuota of cuotas.controls; let i = index" [formGroupName]="i" class="flex justify-content-between mt-3">
+  <div formArrayName="cuotas">
 
-      <p-floatLabel>
-        <p-inputNumber
-          class="w.full"
-          inputId="integeronly-{{ i }}"
-          mode="currency"
-          currency="USD"
-          locale="en-US"
-          formControlName="monto"
-        ></p-inputNumber>
-        <label for="integeronly-{{ i }}">Cuota {{ i + 1 }}</label>
-      </p-floatLabel>
+    <div *ngFor="let cuota of cuotas.controls; let i = index" [formGroupName]="i" class="grid m-0 w-full">
 
+      <div class="col-6">
+        <p-floatLabel>
 
-      <p-calendar
-        placeholder="Vencimiento"
-        dateFormat="dd/mm/yy"
-        [showIcon]="true"
-        formControlName="vencimiento"
-        appendTo="body"
-      ></p-calendar>
+          <p-inputNumber
+            class="w-full"
+            styleClass="w-full"
+            inputStyleClass="w-full"
+            inputId="integeronly-{{ i }}"
+            mode="currency"
+            currency="USD"
+            locale="en-US"
+            formControlName="monto">
+          </p-inputNumber>
+
+          <label for="integeronly-{{ i }}">Cuota {{ i + 1 }}</label>
+
+        </p-floatLabel>
+      </div>
+
+      <div class="col-6">
+
+        <p-calendar
+          class="w-full"
+          styleClass="w-full"
+          inputStyleClass="w-full"
+          placeholder="Vencimiento"
+          dateFormat="dd/mm/yy"
+          [showIcon]="true"
+          formControlName="vencimiento"
+          appendTo="body">
+        </p-calendar>
+
+      </div>
+
     </div>
+
   </div>
   
-
 </form>
 
 <div class="flex align-items-center	justify-content-end gap-3 mt-3">
@@ -63,69 +86,3 @@
   <p-button label="Guardar" styleClass="btn-guardar" [disabled]="!formCuotas.valid || !formCuotas.dirty" type="submit" (onClick)="guardarCambios()"></p-button>
 </div>
 
-
-
-<!-- <form [formGroup]="formCuotas" class="card-cuotas">
-
-  <div class="fix-layout-helper">
-
-    <p-floatLabel>
-      <p-inputNumber
-        [readonly]="true"
-        [style]="{ width: '14rem' }"
-        currency="USD"
-        inputId="integeronly"
-        locale="en-US"
-        mode="currency"
-        formControlName="montoTotal" 
-      ></p-inputNumber>
-      <label for="number-input">Monto Total Factura</label>
-    </p-floatLabel>
-
-
-    <p-inputNumber
-      mode="decimal"
-      placeholder="Cant. Cuotas"
-      [showButtons]="true"
-      inputId="minmax-buttons"
-      [min]="1"
-      [max]="6"
-      formControlName="numCuotas"
-      (onInput)="onNumCuotasChange($event)"
-    ></p-inputNumber>
-  </div>
-
-
-  <div formArrayName="cuotas" class="mt-3">
-    <div *ngFor="let cuota of cuotas.controls; let i = index" [formGroupName]="i" class="flex mt-3 gap-3">
-
-      <p-floatLabel>
-        <p-inputNumber
-          [style]="{ width: '14rem' }"
-          inputId="integeronly-{{ i }}"
-          mode="currency"
-          currency="USD"
-          locale="en-US"
-          formControlName="monto"
-        ></p-inputNumber>
-        <label for="integeronly-{{ i }}">Cuota {{ i + 1 }}</label>
-      </p-floatLabel>
-
-
-      <p-calendar
-        placeholder="Vencimiento"
-        [style]="{ width: '252px' }"
-        dateFormat="dd/mm/yy"
-        [showIcon]="true"
-        formControlName="vencimiento"
-        appendTo="body"
-      ></p-calendar>
-    </div>
-  </div>
-
-</form>
-
-<div class="flex align-items-center	justify-content-end gap-3 mt-3">
-  <p-button label="Cancelar" styleClass="btn-cancelar" severity="contrast" appDebounceClick (click)="closeDialog(null)" />
-  <p-button label="Guardar" styleClass="btn-guardar" [disabled]="!formCuotas.valid || !formCuotas.dirty" type="submit" (onClick)="guardarCambios()"></p-button>
-</div> -->
