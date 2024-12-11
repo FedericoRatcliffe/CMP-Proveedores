@@ -19,13 +19,9 @@ import { ComprobanteService } from '../../core/services/comprobante.service';
 import { TipoComprobanteAFIP } from '../../core/interfaces/tipoComprobanteAFIP.interface';
 import { CuotasComponent } from '../dialog/cuotas/cuotas.component';
 import { TablaFormularioCargaPdfComponent } from '../tabla-formulario-carga-pdf/tabla-formulario-carga-pdf.component';
+import { operarFecha } from '../../core/helpers/operar-fecha.helper';
 
 // import dayjs from 'dayjs';
-
-import { addDays, parse, format, isBefore, subDays } from 'date-fns';
-
-
-
 
 @Component({
   selector: 'formulario-carga-pdf',
@@ -295,7 +291,7 @@ export class FormularioCargaPdfComponent implements OnInit, OnChanges {
     this.numCuotas = 1; // inicia con 1 cuota
     this.primerCuota = montoTotal; // la unica cuota es igual al total
     //this.primerVencimiento = new Date(fechaEmision); // vencimiento basado en fecha de emision
-    this.primerVencimiento = this.operarFecha(fechaEmision, 30, 'suma');
+    this.primerVencimiento = operarFecha(fechaEmision, 1, 'suma', false);
 
     // Ajustar el vencimiento: por ejemplo, sumar 30 días
     //this.primerVencimiento.setDate(this.primerVencimiento.getDate() + 30);
@@ -334,8 +330,7 @@ export class FormularioCargaPdfComponent implements OnInit, OnChanges {
       transitionOptions: '.1s ease',
       data: {
         total: totalComprobante,
-        fechaEmision: new Date(fechaEmision),
-
+        fechaEmision,
         numCuotas: this.numCuotas, // Pasar el valor actual de las cuotas
         primerCuota: this.primerCuota, // Pasar el importe actual de la primera cuota
         cuotas: this.generarCuotasActuales(), // Pasar el estado actual de todas las cuotas
@@ -421,14 +416,6 @@ export class FormularioCargaPdfComponent implements OnInit, OnChanges {
     });
 
     console.log('Fecha sugerida de pago:', fechaSugerida.toLocaleDateString());
-  }
-
-
-  private operarFecha(dateString: string, dias: number, operacion: 'suma' | 'resta'): Date {
-    const date = parse(dateString, 'dd/MM/yyyy', new Date());
-    const result = operacion === 'suma' ? addDays(date, dias) : subDays(date, dias);
-
-    return result;
   }
 
 }
