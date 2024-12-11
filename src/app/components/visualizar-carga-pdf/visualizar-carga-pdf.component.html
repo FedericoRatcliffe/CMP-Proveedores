@@ -5,7 +5,7 @@
         <img src="assets/icons/upload-arrow.svg" width="13" height="14" alt="">
         Subir Factura
     </button>
-    <input type="file" #inputReference hidden (change)="onFileInputChange($event, 'pdf')">
+    <input type="file" #inputReference hidden (change)="handleFileInputChange($event, 'pdf')">
 
     <!-- Div para mostrar el nombre del archivo -->
     <div *ngIf="nombreArchivo" class="seleccionador-archivos">
