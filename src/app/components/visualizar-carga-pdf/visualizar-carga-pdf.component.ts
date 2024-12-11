@@ -20,8 +20,8 @@ export class VisualizarCargaPdfComponent implements OnInit {
   @Output() datosComprobante = new EventEmitter<any>();
   // @Output() datosComprobante = new EventEmitter<{ comprobanteAFIP: any }>();;
 
-  esPDF = false;
-  esJPG = false;
+  esPDF : boolean = false;
+  esJPG : boolean = false;
 
   pdfSrc: SafeResourceUrl | null = null;
   nombreArchivo: string | null = null;
@@ -99,17 +99,32 @@ export class VisualizarCargaPdfComponent implements OnInit {
   }
 
 
+  // Sube el archivo PDF al servidor mediante una llamada al servicio.
+  private subirPDF(file: File): void {
+    this.comprobanteService.enviarArchivoPDF(file).subscribe({
+      next: (response) => this.handlePDFRespuesta(response),
+      error: (error) => console.error('Error al enviar el archivo PDF:', error)
+    });
+  }
+
+
+
+  // Procesa la respuesta del servidor para extraer y emitir los datos de comprobanteAFIP, si están disponibles.
+  private handlePDFRespuesta(response: any): void {
+    if (response?.comprobanteAFIP) {
+      this.datosComprobante.emit(response.comprobanteAFIP);
+    } else {
+      console.warn('El archivo no contiene datos de comprobanteAFIP');
+    }
+  }
+
+
 
   // Maneja el procesamiento y la visualización de un archivo de imagen JPG.
   private procesarJPG(file: File): void {
     const imageUrl = URL.createObjectURL(file);
     this.pdfSrc = this.sanitizer.bypassSecurityTrustResourceUrl(imageUrl);
     this.uploadJPG(file); // Envia el archivo JPG al backend
-  }
-
-  private setRecursoSeguroURL(file: File): void {
-    const url = URL.createObjectURL(file);
-    this.pdfSrc = this.sanitizer.bypassSecurityTrustResourceUrl(url);
   }
 
   private uploadJPG(file: File): void {
@@ -130,26 +145,10 @@ export class VisualizarCargaPdfComponent implements OnInit {
 
 
 
-  
-
-  // Sube el archivo PDF al servidor mediante una llamada al servicio.
-  private subirPDF(file: File): void {
-    this.comprobanteService.enviarArchivoPDF(file).subscribe({
-      next: (response) => this.handlePDFRespuesta(response),
-      error: (error) => console.error('Error al enviar el archivo PDF:', error)
-    });
+  private setRecursoSeguroURL(file: File): void {
+    const url = URL.createObjectURL(file);
+    this.pdfSrc = this.sanitizer.bypassSecurityTrustResourceUrl(url);
   }
 
-
-
-  // Procesa la respuesta del servidor para extraer y emitir los datos de comprobanteAFIP, si están disponibles.
-  private handlePDFRespuesta(response: any): void {
-    if (response?.comprobanteAFIP) {
-      this.datosComprobante.emit(response.comprobanteAFIP);
-    } else {
-      console.warn('El archivo no contiene datos de comprobanteAFIP');
-    }
-  }
-  
 }
 

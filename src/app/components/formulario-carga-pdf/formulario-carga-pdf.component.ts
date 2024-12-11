@@ -247,7 +247,7 @@ export class FormularioCargaPdfComponent implements OnInit, OnChanges {
     this.primerVencimiento = operarFecha(fechaEmision, 1, 'suma', false); // Calcula el vencimiento inicial.
   }
 
-  editarCuotas(): void {
+  editarCuotas(event:any): void {
     const totalComprobante = this.formEnviarFactura.get('total')?.value;
     const fechaEmision = this.formEnviarFactura.get('fechaEmision')?.value;
 
