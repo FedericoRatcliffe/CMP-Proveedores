@@ -188,14 +188,14 @@ export class FormularioCargaPdfComponent implements OnInit, OnChanges {
       total: datos.total ?? null,
       fechaEmision: datos.fechaEmision || null,
       fechaVencimiento: datos.fechaVencimiento,
-      facturaAbonada: datos.facturaAbonada ?? false,
+      // facturaAbonada: datos.facturaAbonada ?? false,
       // fechaPago: datos.fechaPago ? new Date(datos.fechaPago) : null,
     });
 
     // Actualizar cuotas si existen
-    this.numCuotas = datos.numCuotas ?? null;
-    this.primerCuota = datos.primerCuota ?? null;
-    this.primerVencimiento = datos.primerVencimiento ? new Date(datos.primerVencimiento) : null;
+    // this.numCuotas = datos.numCuotas ?? null;
+    // this.primerCuota = datos.primerCuota ?? null;
+    // this.primerVencimiento = datos.primerVencimiento ? new Date(datos.primerVencimiento) : null;
   }
 
 
