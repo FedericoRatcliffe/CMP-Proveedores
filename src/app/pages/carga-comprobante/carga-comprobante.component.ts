@@ -21,5 +21,6 @@ export class CargaComprobanteComponent {
     console.log('Datos recibidos del PDF:', datos);
     this.datosExtraidos = datos;
   }
+  
 
 }

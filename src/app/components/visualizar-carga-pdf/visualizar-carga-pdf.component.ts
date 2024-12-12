@@ -102,17 +102,17 @@ export class VisualizarCargaPdfComponent implements OnInit {
   // Sube el archivo PDF al servidor mediante una llamada al servicio.
   private subirPDF(file: File): void {
     this.comprobanteService.enviarArchivoPDF(file).subscribe({
-      next: (response) => this.handlePDFRespuesta(response),
+      next: (response) => this.handlePDFRespuesta(response, file),
       error: (error) => console.error('Error al enviar el archivo PDF:', error)
     });
   }
 
-
+  
 
   // Procesa la respuesta del servidor para extraer y emitir los datos de comprobanteAFIP, si están disponibles.
-  private handlePDFRespuesta(response: any): void {
+  private handlePDFRespuesta(response: any, file: File): void {
     if (response?.comprobanteAFIP) {
-      this.datosComprobante.emit(response.comprobanteAFIP);
+      this.datosComprobante.emit({ ...response.comprobanteAFIP, archivo: file });
     } else {
       console.warn('El archivo no contiene datos de comprobanteAFIP');
     }

@@ -45,8 +45,8 @@ import { operarFecha } from '../../core/helpers/operar-fecha.helper';
     TooltipModule,
 
     TablaFormularioCargaPdfComponent,
-],
-  providers:[
+  ],
+  providers: [
     ComprobanteService,
     DialogService
   ],
@@ -54,19 +54,19 @@ import { operarFecha } from '../../core/helpers/operar-fecha.helper';
   styleUrl: './formulario-carga-pdf.component.scss'
 })
 export class FormularioCargaPdfComponent implements OnInit, OnChanges {
-  
+
   @Input() datosComprobante: any;
 
   // Información de la tarjeta
-  razonSocialCard : string = 'RAZÓN SOCIAL'; // Texto predeterminado para la tarjeta de razón social. Asegúrese de actualizarlo dinámicamente cuando sea necesario.
-  cuitEmisor : string = 'xxxxxxxxxxx'; // CUIT del emisor, se actualiza al buscar el proveedor.
-  condIva : string = 'xxxx'; // Condición de IVA del emisor.
-  domicilio : string = 'xxxx'; // Domicilio del emisor.
+  razonSocialCard: string = 'RAZÓN SOCIAL'; // Texto predeterminado para la tarjeta de razón social. Asegúrese de actualizarlo dinámicamente cuando sea necesario.
+  cuitEmisor: string = 'xxxxxxxxxxx'; // CUIT del emisor, se actualiza al buscar el proveedor.
+  condIva: string = 'xxxx'; // Condición de IVA del emisor.
+  domicilio: string = 'xxxx'; // Domicilio del emisor.
 
   // Indicadores
-  isLoading : boolean = false; // Indica si hay una carga activa para mostrar un estado visual.
-  mostrarCuitReceptorNoCooperacionWarning : boolean = false; // Muestra advertencia si el CUIT receptor no es el esperado.
-  mostrarCuitReceptorCooperacionWarning : boolean = false; // Muestra advertencia si el CUIT receptor es el esperado.
+  isLoading: boolean = false; // Indica si hay una carga activa para mostrar un estado visual.
+  mostrarCuitReceptorNoCooperacionWarning: boolean = false; // Muestra advertencia si el CUIT receptor no es el esperado.
+  mostrarCuitReceptorCooperacionWarning: boolean = false; // Muestra advertencia si el CUIT receptor es el esperado.
 
   // Formularios
   formEnviarFactura: FormGroup; // Formulario principal para enviar factura.
@@ -104,12 +104,18 @@ export class FormularioCargaPdfComponent implements OnInit, OnChanges {
       this.validarCuitReceptor();
       this.sugerirFechaPago();
       this.inicializarCuotasPorDefecto();
+      this.formEnviarFactura.patchValue({ archivo: this.datosComprobante.archivo });
     }
   }
 
   ngOnInit(): void {
     this.cargarTiposComprobantes();
     this.suscribirCambiosFormulario();
+  }
+
+  private suscribirCambiosFormulario(): void {
+    this.formEnviarFactura.get('fechaVencimiento')?.valueChanges.subscribe(() => this.sugerirFechaPago()); // Observa cambios en la fecha de vencimiento.
+    this.formEnviarFactura.get('facturaAbonada')?.valueChanges.subscribe(() => this.sugerirFechaPago()); // Observa cambios en el estado de factura abonada.
   }
 
   //MAPEO DE DATOS
@@ -141,7 +147,7 @@ export class FormularioCargaPdfComponent implements OnInit, OnChanges {
       fechaVencimiento: [null, Validators.required],
       facturaAbonada: [null, Validators.required],
       fechaPago: [null, Validators.required],
-      pdfBase64: [null, Validators.required],
+      archivo: [null, Validators.required],
     }); // Formulario inicial para capturar datos de la factura.
   }
 
@@ -158,6 +164,12 @@ export class FormularioCargaPdfComponent implements OnInit, OnChanges {
   }
 
 
+
+
+
+
+
+
   //VALIDAR CUIT
   private validarCuitReceptor(): void {
     const cuitCooperacion = '30500047174'; // CUIT esperado para identificar cooperación.
@@ -171,12 +183,6 @@ export class FormularioCargaPdfComponent implements OnInit, OnChanges {
       next: (data) => (this.tipoComprobante = data),
       error: (err) => console.error('Error al obtener los tipos de comprobantes AFIP', err),
     }); // Carga los tipos de comprobantes desde el servicio.
-  }
-
-
-  private suscribirCambiosFormulario(): void {
-    this.formEnviarFactura.get('fechaVencimiento')?.valueChanges.subscribe(() => this.sugerirFechaPago()); // Observa cambios en la fecha de vencimiento.
-    this.formEnviarFactura.get('facturaAbonada')?.valueChanges.subscribe(() => this.sugerirFechaPago()); // Observa cambios en el estado de factura abonada.
   }
 
   buscarProveedor(): void {
@@ -247,7 +253,7 @@ export class FormularioCargaPdfComponent implements OnInit, OnChanges {
     this.primerVencimiento = operarFecha(fechaEmision, 1, 'suma', false); // Calcula el vencimiento inicial.
   }
 
-  editarCuotas(event:any): void {
+  editarCuotas(event: any): void {
     const totalComprobante = this.formEnviarFactura.get('total')?.value;
     const fechaEmision = this.formEnviarFactura.get('fechaEmision')?.value;
 
@@ -319,6 +325,60 @@ export class FormularioCargaPdfComponent implements OnInit, OnChanges {
       }
     }
   }
+
+
+
+
+
+  //ENVIAR FORMULARIO COMPLETO
+  enviarFormulario(): void {
+    const archivo = this.formEnviarFactura.get('archivo')?.value;
+
+    if (!archivo) {
+      console.error('No hay archivo cargado para enviar.');
+      return;
+    }
+
+    const reader = new FileReader();
+
+    // Leer el archivo como ArrayBuffer y convertirlo a Blob
+    reader.onload = () => {
+      const blobData = new Blob([reader.result as ArrayBuffer], { type: archivo.type }); // Convierte el archivo en Blob
+      const fileExtension = archivo.name.split('.').pop()?.toLowerCase(); // Obtén la extensión del archivo
+      const fileName = archivo.name; // Obtén el nombre original del archivo
+
+      const data = {
+        tipoComprobante: this.formEnviarFactura.get('tipoComprobante')?.value,
+        puntoVenta: this.formEnviarFactura.get('puntoVenta')?.value,
+        numero: this.formEnviarFactura.get('numero')?.value,
+        importeNeto: this.formEnviarFactura.get('importeNeto')?.value,
+        iva: this.formEnviarFactura.get('iva')?.value,
+        otrosImpuestos: this.formEnviarFactura.get('otrosImpuestos')?.value,
+        total: this.formEnviarFactura.get('total')?.value,
+        fechaEmision: this.formEnviarFactura.get('fechaEmision')?.value,
+        fechaVencimiento: this.formEnviarFactura.get('fechaVencimiento')?.value,
+        facturaAbonada: this.formEnviarFactura.get('facturaAbonada')?.value,
+        fechaPago: this.formEnviarFactura.get('fechaPago')?.value,
+        archivo: blobData, // Archivo en Blob
+        extension: fileExtension, // Extensión del archivo
+        nombreArchivo: fileName, // Nombre del archivo
+      };
+
+      // Enviar el formulario con el archivo
+      // this.comprobanteService.enviarFormulario(data).subscribe({
+      //   next: (response) => console.log('Formulario enviado con éxito:', response),
+      //   error: (error) => console.error('Error al enviar el formulario:', error),
+      // });
+
+      console.log(data);
+      console.log(blobData);
+      console.log(fileExtension);
+      console.log(fileName);
+    };
+
+    reader.readAsArrayBuffer(archivo); // Lee el archivo como ArrayBuffer para luego convertirlo a Blob
+  }
+
 
 
 
