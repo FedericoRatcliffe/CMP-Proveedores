@@ -311,6 +311,8 @@ export class FormularioCargaPdfComponent implements OnInit, OnChanges {
       const fileName = archivo.name; // Obtén el nombre original del archivo
 
       const data = {
+        cuitEmisor: this.datosComprobante?.cuitEmisor,
+        cuitReceptor: this.datosComprobante?.cuitReceptor,
         tipoComprobante: this.formEnviarFactura.get('tipoComprobante')?.value,
         puntoVenta: this.formEnviarFactura.get('puntoVenta')?.value,
         numero: this.formEnviarFactura.get('numero')?.value,
@@ -325,7 +327,7 @@ export class FormularioCargaPdfComponent implements OnInit, OnChanges {
         archivo: blobData, // Archivo en Blob
         extension: fileExtension, // Extensión del archivo
         nombreArchivo: fileName, // Nombre del archivo
-        proveedor: this.datosProveedor, 
+        proveedor: this.datosProveedor.ctacod, //Se envia el ID del proveedor
       };
 
       // Enviar el formulario con el archivo
