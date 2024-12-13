@@ -1,4 +1,4 @@
-import { Component, EventEmitter, Input, OnChanges, OnInit, Output, SimpleChanges } from '@angular/core';
+import { Component, EventEmitter, Input, OnChanges, OnDestroy, OnInit, Output, SimpleChanges } from '@angular/core';
 import { DialogService, DynamicDialogRef } from 'primeng/dynamicdialog';
 import { CuotasComponent } from '../dialog/cuotas/cuotas.component';
 import { CurrencyPipe, DatePipe } from '@angular/common';
@@ -14,7 +14,7 @@ import { operarFecha } from '../../core/helpers/operar-fecha.helper';
   templateUrl: './selector-cuotas.component.html',
   styleUrl: './selector-cuotas.component.scss'
 })
-export class SelectorCuotasComponent implements OnInit, OnChanges {
+export class SelectorCuotasComponent implements OnInit, OnChanges, OnDestroy {
   
   @Input() total: number = 0; // Monto total del comprobante
   @Input() fechaEmision: Date | string = new Date(); // Fecha de emisión del comprobante
@@ -32,10 +32,17 @@ export class SelectorCuotasComponent implements OnInit, OnChanges {
   }
 
   ngOnChanges(changes: SimpleChanges): void {
+    
+    if (changes['total']?.currentValue < 0) {
+      console.warn('El monto total no puede ser negativo.');
+      this.total = 0;
+    }
+
     if (changes['total'] || changes['fechaEmision']) {
       this.inicializarCuotas();
     }
   }
+  
 
   inicializarCuotas(): void {
     if (this.total > 0 && this.fechaEmision) {
@@ -105,12 +112,38 @@ export class SelectorCuotasComponent implements OnInit, OnChanges {
   }
 
   emitirCuotas(): void {
+    const cuotasArray = this.generarArrayCuotas();
+
     this.cuotasCambiadas.emit({
       numCuotas: this.numCuotas,
       primerCuota: this.primerCuota,
       primerVencimiento: this.primerVencimiento,
+      cuotasArray, // Emitimos las cuotas ya procesadas
     });
   }
+
+
+
+  generarArrayCuotas(): any[] {
+    const cuotasArray = [];
+    if (this.numCuotas && this.primerVencimiento && this.primerCuota) {
+      let fechaVencimiento = new Date(this.primerVencimiento);
+  
+      for (let i = 0; i < this.numCuotas; i++) {
+        cuotasArray.push({
+          nroCuota: i + 1,
+          fecVtoCmp: this.formatearFecha(fechaVencimiento),
+          importe: this.primerCuota,
+        });
+  
+        // Avanzar un mes para la siguiente cuota
+        fechaVencimiento = operarFecha(fechaVencimiento, 1, 'suma', false);
+      }
+    }
+    return cuotasArray;
+  }
+  
+  
 
   private formatearFecha(fecha: Date): string {
     // Formatea una fecha Date a 'dd/MM/yyyy'
@@ -119,5 +152,16 @@ export class SelectorCuotasComponent implements OnInit, OnChanges {
     const año = fecha.getFullYear();
     return `${dia}/${mes}/${año}`;
   }
+
+
+
+
+  
+  ngOnDestroy(): void {
+    if (this.ref) {
+      this.ref.close();
+    }
+  }
+  
 }
 

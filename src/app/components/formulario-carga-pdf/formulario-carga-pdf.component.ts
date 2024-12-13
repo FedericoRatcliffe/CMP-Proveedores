@@ -1,6 +1,6 @@
-import { Component, Input, OnChanges, OnInit, SimpleChanges, ViewChild } from '@angular/core';
+import { Component, Input, OnChanges, OnInit, SimpleChanges } from '@angular/core';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
-import { CurrencyPipe, DatePipe, NgIf } from '@angular/common';
+import { NgIf } from '@angular/common';
 
 import { ButtonModule } from 'primeng/button';
 import { CalendarModule } from 'primeng/calendar';
@@ -15,13 +15,12 @@ import { InputTextModule } from 'primeng/inputtext';
 import { SkeletonModule } from 'primeng/skeleton';
 import { TooltipModule } from 'primeng/tooltip';
 
-import { ComprobanteService } from '../../core/services/comprobante.service';
-import { TipoComprobanteAFIP } from '../../core/interfaces/tipoComprobanteAFIP.interface';
-import { CuotasComponent } from '../dialog/cuotas/cuotas.component';
-import { TablaFormularioCargaPdfComponent } from '../tabla-formulario-carga-pdf/tabla-formulario-carga-pdf.component';
-import { operarFecha } from '../../core/helpers/operar-fecha.helper';
+
 import { BusquedaDatosProveedorComponent } from "../busqueda-datos-proveedor/busqueda-datos-proveedor.component";
+import { ComprobanteService } from '../../core/services/comprobante.service';
 import { SelectorCuotasComponent } from "../selector-cuotas/selector-cuotas.component";
+import { TablaFormularioCargaPdfComponent } from '../tabla-formulario-carga-pdf/tabla-formulario-carga-pdf.component';
+import { TipoComprobanteAFIP } from '../../core/interfaces/tipoComprobanteAFIP.interface';
 
 // import dayjs from 'dayjs';
 
@@ -29,10 +28,9 @@ import { SelectorCuotasComponent } from "../selector-cuotas/selector-cuotas.comp
   selector: 'formulario-carga-pdf',
   standalone: true,
   imports: [
-    CurrencyPipe,
-    DatePipe,
     NgIf,
     ReactiveFormsModule,
+
     ButtonModule,
     CalendarModule,
     CheckboxModule,
@@ -44,9 +42,10 @@ import { SelectorCuotasComponent } from "../selector-cuotas/selector-cuotas.comp
     InputTextModule,
     SkeletonModule,
     TooltipModule,
-    TablaFormularioCargaPdfComponent,
+
     BusquedaDatosProveedorComponent,
-    SelectorCuotasComponent
+    SelectorCuotasComponent,
+    TablaFormularioCargaPdfComponent,
 ],
   providers: [
     ComprobanteService,
@@ -75,6 +74,12 @@ export class FormularioCargaPdfComponent implements OnInit, OnChanges {
   tipoComprobante: TipoComprobanteAFIP[] | undefined; // Lista de tipos de comprobantes obtenida del servicio.
   selectedTipoComprobante: TipoComprobanteAFIP | undefined; // Comprobante seleccionado en el formulario.
   cuitReceptor = ''; // CUIT del receptor del comprobante.
+  
+  numCuotas: number | null = null;
+  primerCuota: number | null = null;
+  primerVencimiento: Date | null = null;
+
+  cuotasArray?: [];
 
 
   // Email
@@ -85,11 +90,11 @@ export class FormularioCargaPdfComponent implements OnInit, OnChanges {
 
   constructor(
     private fb: FormBuilder,
-    private comprobanteService: ComprobanteService,
-    private dialogService: DialogService
-  ) {
+    private comprobanteService: ComprobanteService,) {
+
     this.formEnviarFactura = this.createFormEnviarFactura();
     this.formEmail = this.createFormEmail();
+
   }
 
   ngOnChanges(changes: SimpleChanges): void {
@@ -178,14 +183,13 @@ export class FormularioCargaPdfComponent implements OnInit, OnChanges {
   }
 
 
-  numCuotas: number | null = null;
-  primerCuota: number | null = null;
-  primerVencimiento: Date | null = null;
+
   
-  actualizarCuotas(event: { numCuotas: number; primerCuota: number; primerVencimiento: Date }): void {
-    this.numCuotas = event.numCuotas;
-    this.primerCuota = event.primerCuota;
-    this.primerVencimiento = event.primerVencimiento;
+  actualizarCuotas(event: { numCuotas: number; primerCuota: number; primerVencimiento: Date, cuotasArray:[] }): void {
+    this.numCuotas = event.numCuotas || null;
+    this.primerCuota = event.primerCuota || null;
+    this.primerVencimiento = event.primerVencimiento || null;
+    this.cuotasArray = event.cuotasArray || []; // Almacena el array de cuotas procesadas
   }
   
   
@@ -262,6 +266,11 @@ export class FormularioCargaPdfComponent implements OnInit, OnChanges {
       const fileExtension = archivo.name.split('.').pop()?.toLowerCase(); // Obtén la extensión del archivo
       const fileName = archivo.name; // Obtén el nombre original del archivo
 
+      if (!this.cuotasArray || this.cuotasArray.length === 0) {
+        console.error('Las cuotas no están configuradas.');
+        return;
+      }
+
       const data = {
         cuitEmisor: this.datosComprobante?.cuitEmisor,
         cuitReceptor: this.datosComprobante?.cuitReceptor,
@@ -280,6 +289,7 @@ export class FormularioCargaPdfComponent implements OnInit, OnChanges {
         extension: fileExtension, // Extensión del archivo
         nombreArchivo: fileName, // Nombre del archivo
         proveedor: this.datosProveedor.ctacod, //Se envia el ID del proveedor
+        cuotas: this.cuotasArray,
       };
 
       // Enviar el formulario con el archivo
@@ -289,9 +299,9 @@ export class FormularioCargaPdfComponent implements OnInit, OnChanges {
       // });
 
       console.log(data);
-      console.log(blobData);
-      console.log(fileExtension);
-      console.log(fileName);
+      // console.log(blobData);
+      // console.log(fileExtension);
+      // console.log(fileName);
     };
 
     reader.readAsArrayBuffer(archivo); // Lee el archivo como ArrayBuffer para luego convertirlo a Blob

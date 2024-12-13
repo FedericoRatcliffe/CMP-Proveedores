@@ -27,46 +27,44 @@ import { operarFecha } from '../../../core/helpers/operar-fecha.helper';
   styleUrl: './cuotas.component.scss'
 })
 export class CuotasComponent implements OnInit {
-
   formCuotas: FormGroup;
 
-  constructor(private fb: FormBuilder, private ref: DynamicDialogRef, private config: DynamicDialogConfig, private primengConfig: PrimeNGConfig) {
+  constructor(
+    private fb: FormBuilder,
+    private ref: DynamicDialogRef,
+    private config: DynamicDialogConfig,
+    private primengConfig: PrimeNGConfig
+  ) {
     const total = this.config.data.total || 0;
-    const fechaEmision = this.config.data.fechaEmision || new Date();
-    const numCuotas = this.config.data.numCuotas || 1;
     const cuotas = this.config.data.cuotas || []; // Cargar cuotas existentes
+    const numCuotas = this.config.data.numCuotas || 1;
 
+    // Configuración del formulario
     this.formCuotas = this.fb.group({
-      montoTotal: [{ value: total, disabled: true }], // Configurado como deshabilitado
+      montoTotal: [{ value: total, disabled: true }], // Total no editable
       numCuotas: [numCuotas, [Validators.required, Validators.min(1), Validators.max(6)]],
-      cuotas: this.fb.array([]), // FormArray dinámico para cuotas
+      cuotas: this.fb.array([]), // Array dinámico para las cuotas
     });
 
-    // Si existen cuotas previamente configuradas, utilizarlas; de lo contrario, inicializar por defecto
+    // Si hay cuotas configuradas, úsalas; si no, inicializa por defecto
     if (cuotas.length > 0) {
       this.setCuotas(cuotas);
     } else {
-      this.updateCuotas(numCuotas, fechaEmision); // Inicializa con 1 cuota por defecto
+      this.updateCuotas(numCuotas);
     }
   }
 
-
   ngOnInit(): void {
-    // Configuración global para PrimeNG
-    this.primengConfig.setTranslation({
-      dateFormat: 'mm.dd.yy',
-    });
+    this.primengConfig.setTranslation({ dateFormat: 'dd.mm.yy' });
   }
 
-
-  // Getter para acceder al FormArray de cuotas
   get cuotas(): FormArray {
     return this.formCuotas.get('cuotas') as FormArray;
   }
 
-  // Método para configurar cuotas existentes
+  // Configura las cuotas existentes sin recalcularlas
   setCuotas(cuotas: any[]): void {
-    this.cuotas.clear(); // Limpia las cuotas actuales
+    this.cuotas.clear();
 
     cuotas.forEach((cuota) => {
       this.cuotas.push(
@@ -78,70 +76,63 @@ export class CuotasComponent implements OnInit {
     });
   }
 
-
-  // Método para actualizar los campos de cuotas según el número seleccionado
-  updateCuotas(num: number, fechaEmision?: Date): void {
-    this.cuotas.clear(); // Limpia las cuotas actuales
-
+  // Calcula cuotas iguales por defecto, ajustando la última cuota
+  updateCuotas(num: number): void {
     const total = this.formCuotas.get('montoTotal')?.value || 0;
-    const montoPorCuota = Math.floor((total / num) * 100) / 100; // Redondeo hacia abajo a 2 decimales
+    this.cuotas.clear();
+
+    const montoPorCuota = parseFloat((total / num).toFixed(2));
     let sumaParcial = 0;
 
     for (let i = 0; i < num; i++) {
-      // Si es la última cuota, ajusta para compensar el redondeo
       const monto = i === num - 1 ? total - sumaParcial : montoPorCuota;
       sumaParcial += monto;
-      // Calcula la fecha de vencimiento: suma `i` meses a la fecha de emisión
-      const vencimiento = fechaEmision
-        ? operarFecha(fechaEmision, i + 1, 'suma', false)
+
+      const vencimiento = this.config.data.fechaEmision
+        ? operarFecha(this.config.data.fechaEmision, i + 1, 'suma', false)
         : null;
 
       this.cuotas.push(
         this.fb.group({
-          monto: [monto, [Validators.required]], // Campo para el monto de la cuota
-          vencimiento: [vencimiento, [Validators.required]], // Campo para la fecha de vencimiento
+          monto: [monto, [Validators.required]],
+          vencimiento: [vencimiento, [Validators.required]],
         })
       );
     }
   }
 
-
-  // Escucha cambios en el número de cuotas
+  // Recalcula las cuotas cuando cambia el número de cuotas
   onNumCuotasChange(event: any): void {
     const num = event.value;
-    const fechaEmision = this.config.data.fechaEmision || new Date();
     if (num) {
-      this.updateCuotas(num, fechaEmision);
+      this.updateCuotas(num);
     }
   }
 
-
-  // Método para manejar el submit (opcional)
-  onSubmit(): void {
-    if (this.formCuotas.valid) {
-      console.log(this.formCuotas.value);
-    }
-  }
-
-  // Método para cerrar el diálogo
-  closeDialog(data: any): void {
-    this.ref.close(data);
-  }
-
+  // Guarda y cierra el diálogo devolviendo los datos configurados
   guardarCambios(): void {
     if (this.formCuotas.valid) {
-      const cuotasValue = this.cuotas.value;
+      const cuotasValue = this.cuotas.value.map((cuota: any) => ({
+        monto: parseFloat(cuota.monto),
+        vencimiento: cuota.vencimiento,
+      }));
+
       const resultado = {
         numCuotas: this.formCuotas.get('numCuotas')?.value,
         primerCuota: cuotasValue[0]?.monto || 0,
         primerVencimiento: cuotasValue[0]?.vencimiento || null,
+        cuotas: cuotasValue, // Array exacto de cuotas configuradas
       };
-      this.ref.close(resultado); // Envía los datos al padre
+
+      this.ref.close(resultado);
     } else {
       alert('Por favor, complete todos los campos antes de guardar.');
-      console.error('Formulario inválido');
     }
   }
 
+  closeDialog(): void {
+    this.ref.close();
+  }
 }
+
 

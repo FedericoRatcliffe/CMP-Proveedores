@@ -82,7 +82,7 @@
 </form>
 
 <div class="flex align-items-center	justify-content-end gap-3 mt-3">
-  <p-button label="Cancelar" styleClass="btn-cancelar" severity="contrast" appDebounceClick (click)="closeDialog(null)" />
+  <p-button label="Cancelar" styleClass="btn-cancelar" severity="contrast" appDebounceClick (click)="closeDialog()" />
   <p-button label="Guardar" styleClass="btn-guardar" [disabled]="!formCuotas.valid || !formCuotas.dirty" type="submit" (onClick)="guardarCambios()"></p-button>
 </div>
 
