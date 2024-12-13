@@ -180,60 +180,19 @@
         </div>
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
         <div class="formulario-carga-pdf__top__cuotas-tabla">
-
-            <div class="formulario-carga-pdf__top__cuotas-tablas--cuotas">
-
-                <!-- CUOTAS -->
-                <div class="grid m-0">
-
-                    <div class="layout-cuotas col-6">
-                        <div class="flex flex-column gap-2">
-
-                            <span>Cant. Cuotas: <strong>{{ numCuotas }}</strong></span>
-
-                            <span>Importe 1° Cuota: <strong>{{ primerCuota | currency:'USD' }}</strong></span>
-
-                            <span>1er. Venc.: <strong>{{ primerVencimiento | date:'dd/MM/yyyy' }}</strong></span>
-                        </div>
-                    </div>
-
-                </div>
-
-                <div class="pt-3">
-                    <button class="btn-cuotas" (click)="editarCuotas($event)">
-                        <img src="assets/icons/plus.svg" width="16" height="16" alt="">Cuotas
-                    </button>
-                </div>
-
-            </div>
-
-
-
-
+            
+            <app-selector-cuotas
+            [total]="formEnviarFactura.get('total')?.value"
+            [fechaEmision]="formEnviarFactura.get('fechaEmision')?.value"
+            (cuotasCambiadas)="actualizarCuotas($event)">
+            </app-selector-cuotas>
+            
+            
             <div class="formulario-carga-pdf__top__cuotas-tabla--tabla mt-3">
                 <tabla-formulario-carga-pdf></tabla-formulario-carga-pdf>
             </div>
-
+            
 
 
             <!-- EMAIL -->
@@ -274,4 +233,4 @@
     </div>
 </div>
 
-<button (click)="enviarFormulario()">click</button>
+<!-- <button (click)="enviarFormulario()">click</button> -->

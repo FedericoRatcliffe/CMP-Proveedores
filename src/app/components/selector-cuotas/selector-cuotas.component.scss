@@ -1,0 +1,41 @@
+.selector-cuotas {
+
+    &__layout-cuotas {
+        border-radius: 0.25rem;
+        border: 1px solid var(--Primary-Light, #D6E4FF);
+        background: var(--Grey-200, #F4F6F8);
+    }
+
+    &__btn-cuotas
+    {
+        display: flex;
+        width: 8.1875rem;
+        height: 3.125rem;
+        padding: 0.5rem 1.5rem;
+    
+        cursor: pointer;
+    
+        justify-content: center;
+        align-items: center;
+        gap: 0.5rem;
+    
+        border-radius: 0.25rem;
+        border: 2px solid var(--CP-Blue-Dark-Medio, #185287);
+    
+    
+        color: var(--Primary-Darktitle, var(--CP-Blue-Dark-Medio, #185287));
+        background-color: white;
+    
+    
+        font-family: Roboto;
+        font-size: 1rem;
+        font-style: normal;
+        font-weight: 600;
+        line-height: 1.5rem;
+    }  
+
+}
+
+
+
+

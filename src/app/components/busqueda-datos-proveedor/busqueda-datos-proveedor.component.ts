@@ -6,6 +6,8 @@ import { SkeletonModule } from 'primeng/skeleton';
 import { ButtonModule } from 'primeng/button';
 import { InputTextModule } from 'primeng/inputtext';
 import { InputGroupModule } from 'primeng/inputgroup';
+import { TooltipModule } from 'primeng/tooltip';
+
 
 @Component({
   selector: 'app-busqueda-datos-proveedor',
@@ -18,7 +20,8 @@ import { InputGroupModule } from 'primeng/inputgroup';
     SkeletonModule,
     ButtonModule,
     InputTextModule,
-    InputGroupModule
+    InputGroupModule,
+    TooltipModule
   ],
   templateUrl: './busqueda-datos-proveedor.component.html',
   styleUrl: './busqueda-datos-proveedor.component.scss'

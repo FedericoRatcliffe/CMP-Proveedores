@@ -1,0 +1,14 @@
+<div class="selector-cuotas grid m-0">
+    <div class="selector-cuotas__layout-cuotas col-6">
+        <div class="flex flex-column gap-2">
+            <span>Cant. Cuotas: <strong>{{ numCuotas }}</strong></span>
+            <span>Importe 1° Cuota: <strong>{{ primerCuota | currency:'USD' }}</strong></span>
+            <span>1er. Venc.: <strong>{{ primerVencimiento | date:'dd/MM/yyyy' }}</strong></span>
+        </div>
+    </div>
+</div>
+<div class="pt-3">
+    <button class="selector-cuotas__btn-cuotas" (click)="editarCuotas()">
+        <img src="assets/icons/plus.svg" width="16" height="16" alt="">Cuotas
+    </button>
+</div>
