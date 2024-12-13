@@ -25,85 +25,14 @@
 
 
             <div class="formulario-carga-pdf__top__header--buscador">
-
-                <form [formGroup]="formObtenerProveedor" class="grid m-0">
-
-                    <p-inputGroup class="col-12 xl:col-8 p-0">
-
-                        <input
-                            class="w-full"
-                            (keyup.enter)="formObtenerProveedor.valid ? buscarProveedor() : null"
-                            formControlName="cadena"
-                            pInputText
-                            pTooltip="Ingrese cualquier parte del Cuit o Razón Social del proveedor a buscar"
-                            placeholder="CUIT o Razón Social del Proveedor"
-                            type="text"
-                        />
-
-                        <button (click)="buscarProveedor()" [disabled]="!formObtenerProveedor.valid"
-                            class="p-button-warning" icon="pi pi-search" pButton style="color: white;" type="button">
-                        </button>
-
-                    </p-inputGroup>
-
-                    <div *ngIf="formObtenerProveedor.get('cadena')?.errors?.['maxlength'] || formObtenerProveedor.get('cadena')?.errors?.['minlength']"
-                        style="color: red; font-size: 12px; margin-top: 0.3rem;">
-                        Mínimo 3 caracteres alfabéticos para Razón Social y Max 11 caracteres numéricos para CUIT.
-                    </div>
-
-
-                </form>
-
+                <app-busqueda-datos-proveedor 
+                    [isLoading]="isLoading"
+                    (proveedorSeleccionado)="onProveedorSeleccionado($event)">
+                </app-busqueda-datos-proveedor>
             </div>
 
 
         </div>
-
-
-        <div class="formulario-carga-pdf__top__data-card">
-            <!-- CARD DATOS PROVEEDOR -->
-            @if (!isLoading) {
-
-            <div class="align-items-start p-3 mt-2 card-datos-proveedor">
-                <div class="grid m-0">
-
-                    <div class="col-12 p-0">
-                        <h6 class="w-full proveedor-txt">{{razonSocialCard}}</h6>
-                    </div>
-
-                    <div>
-
-                        <div class="mt-1">
-                            <span class="w-full cuit-condicion-domicilio-txt  mr-4">CUIT:
-                                <strong>{{cuitEmisor}}</strong></span>
-                            <span class="w-full cuit-condicion-domicilio-txt">Condición IVA:
-                                <strong>{{condIva}}</strong></span>
-                        </div>
-
-                        <div class="mt-1">
-                            <span class="w-full cuit-condicion-domicilio-txt">Domicilio:
-                                <strong>{{domicilio}}</strong></span>
-                        </div>
-
-                    </div>
-
-                </div>
-
-            </div>
-            }
-            @else {
-            <div class="p-3 mt-3 card-datos-proveedor">
-
-                <p-skeleton width="30%" height="1rem" styleClass="mb-2"></p-skeleton>
-
-                <p-skeleton width="40%" height="1rem" styleClass="mt-1"></p-skeleton>
-
-                <p-skeleton width="20%" height="1rem" styleClass="mt-2"></p-skeleton>
-
-            </div>
-            }
-        </div>
-
 
         <div class="formulario-carga-pdf__top__form">
 
@@ -345,6 +274,4 @@
     </div>
 </div>
 
-
-
-
+<button (click)="enviarFormulario()">click</button>

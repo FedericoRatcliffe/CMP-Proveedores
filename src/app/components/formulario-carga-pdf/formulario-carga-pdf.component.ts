@@ -20,6 +20,7 @@ import { TipoComprobanteAFIP } from '../../core/interfaces/tipoComprobanteAFIP.i
 import { CuotasComponent } from '../dialog/cuotas/cuotas.component';
 import { TablaFormularioCargaPdfComponent } from '../tabla-formulario-carga-pdf/tabla-formulario-carga-pdf.component';
 import { operarFecha } from '../../core/helpers/operar-fecha.helper';
+import { BusquedaDatosProveedorComponent } from "../busqueda-datos-proveedor/busqueda-datos-proveedor.component";
 
 // import dayjs from 'dayjs';
 
@@ -31,7 +32,6 @@ import { operarFecha } from '../../core/helpers/operar-fecha.helper';
     DatePipe,
     NgIf,
     ReactiveFormsModule,
-
     ButtonModule,
     CalendarModule,
     CheckboxModule,
@@ -43,9 +43,9 @@ import { operarFecha } from '../../core/helpers/operar-fecha.helper';
     InputTextModule,
     SkeletonModule,
     TooltipModule,
-
     TablaFormularioCargaPdfComponent,
-  ],
+    BusquedaDatosProveedorComponent
+],
   providers: [
     ComprobanteService,
     DialogService
@@ -57,11 +57,8 @@ export class FormularioCargaPdfComponent implements OnInit, OnChanges {
 
   @Input() datosComprobante: any;
 
-  // Información de la tarjeta
-  razonSocialCard: string = 'RAZÓN SOCIAL'; // Texto predeterminado para la tarjeta de razón social. Asegúrese de actualizarlo dinámicamente cuando sea necesario.
-  cuitEmisor: string = 'xxxxxxxxxxx'; // CUIT del emisor, se actualiza al buscar el proveedor.
-  condIva: string = 'xxxx'; // Condición de IVA del emisor.
-  domicilio: string = 'xxxx'; // Domicilio del emisor.
+  datosProveedor: any = null; // Propiedad para almacenar los datos del proveedor
+
 
   // Indicadores
   isLoading: boolean = false; // Indica si hay una carga activa para mostrar un estado visual.
@@ -70,13 +67,13 @@ export class FormularioCargaPdfComponent implements OnInit, OnChanges {
 
   // Formularios
   formEnviarFactura: FormGroup; // Formulario principal para enviar factura.
-  formObtenerProveedor: FormGroup; // Formulario para buscar proveedor.
   formEmail: FormGroup; // Formulario para manejar datos de email.
 
   // Variables
   tipoComprobante: TipoComprobanteAFIP[] | undefined; // Lista de tipos de comprobantes obtenida del servicio.
   selectedTipoComprobante: TipoComprobanteAFIP | undefined; // Comprobante seleccionado en el formulario.
   cuitReceptor = ''; // CUIT del receptor del comprobante.
+
   numCuotas: number | null = null; // Número de cuotas inicializadas.
   primerCuota: number | null = null; // Valor de la primera cuota.
   primerVencimiento: Date | null = null; // Fecha de vencimiento de la primera cuota.
@@ -93,7 +90,6 @@ export class FormularioCargaPdfComponent implements OnInit, OnChanges {
     private dialogService: DialogService
   ) {
     this.formEnviarFactura = this.createFormEnviarFactura();
-    this.formObtenerProveedor = this.createFormObtenerProveedor();
     this.formEmail = this.createFormEmail();
   }
 
@@ -151,23 +147,11 @@ export class FormularioCargaPdfComponent implements OnInit, OnChanges {
     }); // Formulario inicial para capturar datos de la factura.
   }
 
-  private createFormObtenerProveedor(): FormGroup {
-    return this.fb.group({
-      cadena: [null, [Validators.required, Validators.minLength(3), Validators.maxLength(11)]],
-    }); // Formulario para buscar proveedor mediante un texto o CUIT.
-  }
-
   private createFormEmail(): FormGroup {
     return this.fb.group({
       email: [null],
     }); // Formulario para capturar el email.
   }
-
-
-
-
-
-
 
 
   //VALIDAR CUIT
@@ -177,40 +161,16 @@ export class FormularioCargaPdfComponent implements OnInit, OnChanges {
     this.mostrarCuitReceptorCooperacionWarning = this.cuitReceptor === cuitCooperacion;
   }
 
+  onProveedorSeleccionado(proveedor: any): void {
+    this.datosProveedor = proveedor;
+  }
+
 
   private cargarTiposComprobantes(): void {
     this.comprobanteService.obtenerTiposComprobantesAFIP().subscribe({
       next: (data) => (this.tipoComprobante = data),
       error: (err) => console.error('Error al obtener los tipos de comprobantes AFIP', err),
     }); // Carga los tipos de comprobantes desde el servicio.
-  }
-
-  buscarProveedor(): void {
-    const cadena = this.formObtenerProveedor.get('cadena')?.value;
-
-    if (!cadena) {
-      console.warn('Debe ingresar un nombre o CUIT');
-      return; // Verifica que haya una cadena de búsqueda válida.
-    }
-
-    this.isLoading = true;
-    this.comprobanteService.obtenerProveedor('01', cadena).subscribe({
-      next: (data) => this.actualizarInformacionProveedor(data),
-      error: (err) => console.error('Error obteniendo el proveedor', err),
-      complete: () => (this.isLoading = false),
-    }); // Busca el proveedor y actualiza la vista.
-  }
-
-  private actualizarInformacionProveedor(data: any[]): void {
-    if (data?.length > 0) {
-      const proveedor = data[0];
-      this.razonSocialCard = proveedor.descripcion; // Actualiza la razón social.
-      this.cuitEmisor = proveedor.cuit; // Actualiza el CUIT del emisor.
-      this.condIva = proveedor.condIva; // Actualiza la condición de IVA.
-      this.domicilio = proveedor.domicilio; // Actualiza el domicilio del emisor.
-    } else {
-      console.warn('No se encontró ningún proveedor con los datos proporcionados.'); // Muestra un aviso si no hay datos.
-    }
   }
 
 
@@ -330,6 +290,9 @@ export class FormularioCargaPdfComponent implements OnInit, OnChanges {
 
 
 
+
+
+
   //ENVIAR FORMULARIO COMPLETO
   enviarFormulario(): void {
     const archivo = this.formEnviarFactura.get('archivo')?.value;
@@ -362,6 +325,7 @@ export class FormularioCargaPdfComponent implements OnInit, OnChanges {
         archivo: blobData, // Archivo en Blob
         extension: fileExtension, // Extensión del archivo
         nombreArchivo: fileName, // Nombre del archivo
+        proveedor: this.datosProveedor, 
       };
 
       // Enviar el formulario con el archivo
