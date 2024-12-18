@@ -123,7 +123,6 @@ export class CuotasComponent implements OnInit {
         primerVencimiento: cuotasValue[0]?.vencimiento || null,
         cuotas: cuotasValue, // Array exacto de cuotas configuradas
       };
-
       this.ref.close(resultado);
     } else {
       alert('Por favor, complete todos los campos antes de guardar.');
