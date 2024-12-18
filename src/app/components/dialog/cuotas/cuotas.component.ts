@@ -39,6 +39,8 @@ export class CuotasComponent implements OnInit {
     const cuotas = this.config.data.cuotas || []; // Cargar cuotas existentes
     const numCuotas = this.config.data.numCuotas || 1;
 
+    console.log("CUOTAS COMPONENT", this.config.data);
+
     // Configuración del formulario
     this.formCuotas = this.fb.group({
       montoTotal: [{ value: total, disabled: true }], // Total no editable
@@ -78,27 +80,32 @@ export class CuotasComponent implements OnInit {
 
   // Calcula cuotas iguales por defecto, ajustando la última cuota
   updateCuotas(num: number): void {
+    
     const total = this.formCuotas.get('montoTotal')?.value || 0;
     this.cuotas.clear();
 
     const montoPorCuota = parseFloat((total / num).toFixed(2));
+
     let sumaParcial = 0;
 
     for (let i = 0; i < num; i++) {
+
       const monto = i === num - 1 ? total - sumaParcial : montoPorCuota;
       sumaParcial += monto;
+      
 
-      const vencimiento = this.config.data.fechaEmision
-        ? operarFecha(this.config.data.fechaEmision, i + 1, 'suma', false)
-        : null;
+      const vencimiento = this.config.data.fechaEmision ? operarFecha(this.config.data.fechaEmision, i + 1, 'suma', false) : null;
 
       this.cuotas.push(
         this.fb.group({
-          monto: [monto, [Validators.required]],
+          nroCuota: i+1,
+          monto: [monto.toFixed(2), [Validators.required]],
           vencimiento: [vencimiento, [Validators.required]],
         })
-      );
+        );
     }
+
+
   }
 
   // Recalcula las cuotas cuando cambia el número de cuotas
@@ -112,10 +119,14 @@ export class CuotasComponent implements OnInit {
   // Guarda y cierra el diálogo devolviendo los datos configurados
   guardarCambios(): void {
     if (this.formCuotas.valid) {
+
       const cuotasValue = this.cuotas.value.map((cuota: any) => ({
-        monto: parseFloat(cuota.monto),
+        nroCuota: cuota.nroCuota,
+        monto: cuota.monto,
         vencimiento: cuota.vencimiento,
       }));
+
+      console.log("PARSE FLOAT", cuotasValue);
 
       const resultado = {
         numCuotas: this.formCuotas.get('numCuotas')?.value,

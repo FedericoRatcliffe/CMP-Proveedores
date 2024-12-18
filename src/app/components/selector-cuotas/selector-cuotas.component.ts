@@ -41,8 +41,12 @@ export class SelectorCuotasComponent implements OnInit, OnChanges, OnDestroy {
     }
 
     if (changes['total'] || changes['fechaEmision']) {
+
+      this.cuotas.set(null); //LIMPIA LAS CUOTAS AL CAMBIAR LA FACTURA
+
       this.inicializarCuotas();
     }
+    
   }
 
 
@@ -59,6 +63,15 @@ export class SelectorCuotasComponent implements OnInit, OnChanges, OnDestroy {
       this.primerVencimiento = null;
     }
   }
+
+
+
+  // limpiarSeñal(){
+  //   this.cuotas.set();
+  // }
+
+
+
 
   editarCuotas(): void {
     if (!this.total || !this.fechaEmision) {

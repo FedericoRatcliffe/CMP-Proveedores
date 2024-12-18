@@ -110,6 +110,8 @@ export class FormularioCargaPdfComponent implements OnInit, OnChanges {
         total: this.datosComprobante.total,
         fechaEmision: this.datosComprobante.fechaEmision,
       });
+
+      console.log("onChangeFormularioCarga", this.datosComprobante);
     }
   }
 
