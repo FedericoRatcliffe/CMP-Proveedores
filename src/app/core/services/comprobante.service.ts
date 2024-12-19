@@ -4,6 +4,7 @@ import { Observable, from, map, switchMap, tap } from 'rxjs';
 
 import { TipoComprobanteAFIP } from '../interfaces/tipoComprobanteAFIP.interface';
 import { CentroCostoResponse } from '../interfaces/centroDeCostoResponse.interface';
+import { SubirArchivoResponse } from '../interfaces/subirArchivoResponse';
 
 @Injectable({
   providedIn: 'root'
@@ -11,6 +12,8 @@ import { CentroCostoResponse } from '../interfaces/centroDeCostoResponse.interfa
 export class ComprobanteService {
 
   private baseUrl: string = 'https://wsproveedorestest.cooperacionseguros.com.ar/api';
+  private wsCoreBaseUrl: string = 'https://wscoretest.cooperacionseguros.com.ar/api';
+
   private tokenUrl: string = 'https://wssecuritytest.cooperacionseguros.com.ar/token';
 
   constructor(private http: HttpClient) { }
@@ -57,6 +60,78 @@ export class ComprobanteService {
 
     return this.http.post<any>(uploadUrl, formData, { headers });
   }
+  ///////////////////////////
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  private getTokenWsCore(): Observable<string> {
+    const body = {
+      ClientId: 'SSIS',
+      clientSecret: '1046EBE5-4207-43B3-B472-9FA835202446'
+    };
+
+    return this.http.post<{ access_token: string }>(this.tokenUrl, body)
+      .pipe(
+        tap(response => {
+          const token = response.access_token;
+          localStorage.setItem('authTokenWsCore', token);
+        }),
+        switchMap(response => from([response.access_token]))
+      );
+  }
+  
+  subirArchivo(archivo: File): Observable<SubirArchivoResponse> {
+    const formData = new FormData();
+    formData.append('archivo', archivo);
+    const token = localStorage.getItem('authTokenWsCore');
+
+    if (token) {
+      return this.SubirArchivoConTokenWsCore(archivo, token);
+    } else {
+      return this.getTokenWsCore().pipe(
+        switchMap(token => this.SubirArchivoConTokenWsCore(archivo, token))
+      );
+    }
+  }
+
+
+  private SubirArchivoConTokenWsCore(archivo: File, token: string): Observable<SubirArchivoResponse> {
+    const headers = new HttpHeaders({
+      'Authorization': `Bearer ${token}`
+    });
+
+    const formData = new FormData();
+    formData.append('archivo', archivo);
+
+    const uploadUrl = `${this.wsCoreBaseUrl}/Documentos/Guardar`;
+
+    return this.http.post<any>(uploadUrl, formData, { headers });
+  }
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 

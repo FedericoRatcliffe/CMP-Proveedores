@@ -30,7 +30,7 @@ export class SelectorCuotasComponent implements OnInit, OnChanges, OnDestroy {
   constructor(private dialogService: DialogService) {}
 
   ngOnInit(): void {
-    // Inicialización si se requiere.
+
   }
 
   ngOnChanges(changes: SimpleChanges): void {
@@ -41,7 +41,6 @@ export class SelectorCuotasComponent implements OnInit, OnChanges, OnDestroy {
     }
 
     if (changes['total'] || changes['fechaEmision']) {
-
       this.cuotas.set(null); //LIMPIA LAS CUOTAS AL CAMBIAR LA FACTURA
 
       this.inicializarCuotas();
@@ -56,24 +55,21 @@ export class SelectorCuotasComponent implements OnInit, OnChanges, OnDestroy {
       this.numCuotas = 1;
       this.primerCuota = this.total;
       this.primerVencimiento = operarFecha(fechaEmisionFormatted, 1, 'suma', false); // Suma un mes a la fecha de emisión
-      this.emitirCuotas();
+      this.cuotas.set([{ idCuota: 1, importe: this.primerCuota, fecVtoCmp: this.primerVencimiento }]);
+      this.emitirCuotas(); // Emitir inmediatamente al inicializar
     } else {
       this.numCuotas = 0;
       this.primerCuota = 0;
       this.primerVencimiento = null;
+      this.cuotas.set(null);
+      this.emitirCuotas();
     }
   }
-
-
-
-  // limpiarSeñal(){
-  //   this.cuotas.set();
-  // }
-
-
+  
 
 
   editarCuotas(): void {
+    
     if (!this.total || !this.fechaEmision) {
       alert('Debe cargar el monto total y la fecha de emisión del comprobante.');
       return;
@@ -117,8 +113,9 @@ export class SelectorCuotasComponent implements OnInit, OnChanges, OnDestroy {
 
     for (let i = 0; i < this.numCuotas; i++) {
       cuotas.push({
-        monto: cuotaImporte,
-        vencimiento: fechaVencimiento
+        idCuota: i + 1,
+        importe: cuotaImporte,
+        fecVtoCmp: fechaVencimiento
           ? operarFecha(fechaVencimiento, i, 'suma', false) // Suma meses para cada cuota
           : null,
       });

@@ -148,6 +148,7 @@
                             <p-checkbox
                                 formControlName="facturaAbonada"
                                 value="abonada"
+                                binary="true"
                                 inputId="facturaAbonada"
                             />
                             <label for="facturaAbonada">Factura Abonada</label>
@@ -182,11 +183,18 @@
 
         <div class="formulario-carga-pdf__top__cuotas-tabla">
             
-            <app-selector-cuotas
+            <!-- <app-selector-cuotas
             [total]="formEnviarFactura.get('total')?.value"
             [fechaEmision]="formEnviarFactura.get('fechaEmision')?.value"
             (cuotasCambiadas)="actualizarCuotas($event)">
+            </app-selector-cuotas> -->
+
+            <app-selector-cuotas
+                [total]="datosComprobante?.total"
+                [fechaEmision]="datosComprobante?.fechaEmision"
+                (cuotasCambiadas)="actualizarCuotas($event)">
             </app-selector-cuotas>
+
             
             
             <div class="formulario-carga-pdf__top__cuotas-tabla--tabla mt-3">

@@ -39,8 +39,6 @@ export class CuotasComponent implements OnInit {
     const cuotas = this.config.data.cuotas || []; // Cargar cuotas existentes
     const numCuotas = this.config.data.numCuotas || 1;
 
-    console.log("CUOTAS COMPONENT", this.config.data);
-
     // Configuración del formulario
     this.formCuotas = this.fb.group({
       montoTotal: [{ value: total, disabled: true }], // Total no editable
@@ -55,58 +53,97 @@ export class CuotasComponent implements OnInit {
       this.updateCuotas(numCuotas);
     }
   }
+  
 
   ngOnInit(): void {
     this.primengConfig.setTranslation({ dateFormat: 'dd.mm.yy' });
   }
 
+
+
+
+
+
+
+
+
+
+
   get cuotas(): FormArray {
     return this.formCuotas.get('cuotas') as FormArray;
   }
 
+
+
+
+
+
+
+
+
+
   // Configura las cuotas existentes sin recalcularlas
   setCuotas(cuotas: any[]): void {
     this.cuotas.clear();
-
-    cuotas.forEach((cuota) => {
+  
+    cuotas.forEach((cuota, index) => {
       this.cuotas.push(
         this.fb.group({
-          monto: [cuota.monto, [Validators.required]],
-          vencimiento: [new Date(cuota.vencimiento), [Validators.required]],
+          idCuota: [cuota.idCuota || index + 1, []], // Generar idCuota basado en el índice si no está definido
+          importe: [cuota.importe, [Validators.required]],
+          fecVtoCmp: [new Date(cuota.fecVtoCmp), [Validators.required]],
         })
       );
     });
   }
+  
+  
+
+
+
+
+
+
+
+
+
 
   // Calcula cuotas iguales por defecto, ajustando la última cuota
   updateCuotas(num: number): void {
-    
     const total = this.formCuotas.get('montoTotal')?.value || 0;
     this.cuotas.clear();
-
-    const montoPorCuota = parseFloat((total / num).toFixed(2));
-
+  
+    const importePorCuota = parseFloat((total / num).toFixed(2));
     let sumaParcial = 0;
-
+  
     for (let i = 0; i < num; i++) {
-
-      const monto = i === num - 1 ? total - sumaParcial : montoPorCuota;
-      sumaParcial += monto;
-      
-
-      const vencimiento = this.config.data.fechaEmision ? operarFecha(this.config.data.fechaEmision, i + 1, 'suma', false) : null;
-
+      const importe = i === num - 1 ? total - sumaParcial : importePorCuota;
+      sumaParcial += importe;
+  
+      const fecVtoCmp = this.config.data.fechaEmision
+        ? operarFecha(this.config.data.fechaEmision, i + 1, 'suma', false)
+        : new Date();
+  
       this.cuotas.push(
         this.fb.group({
-          nroCuota: i+1,
-          monto: [monto.toFixed(2), [Validators.required]],
-          vencimiento: [vencimiento, [Validators.required]],
+          idCuota: [i + 1, []], // Reinicia identificadores
+          importe: [importe.toFixed(2), [Validators.required]],
+          fecVtoCmp: [fecVtoCmp, [Validators.required]],
         })
-        );
+      );
     }
-
-
   }
+  
+  
+  
+
+
+
+
+
+
+
+
 
   // Recalcula las cuotas cuando cambia el número de cuotas
   onNumCuotasChange(event: any): void {
@@ -116,29 +153,49 @@ export class CuotasComponent implements OnInit {
     }
   }
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
   // Guarda y cierra el diálogo devolviendo los datos configurados
   guardarCambios(): void {
     if (this.formCuotas.valid) {
-
-      const cuotasValue = this.cuotas.value.map((cuota: any) => ({
-        nroCuota: cuota.nroCuota,
-        monto: cuota.monto,
-        vencimiento: cuota.vencimiento,
+      const cuotasValue = this.cuotas.value.map((cuota: any, index: number) => ({
+        idCuota: cuota.idCuota || index + 1, // Asegurarse de asignar un idCuota único
+        importe: cuota.importe,
+        fecVtoCmp: cuota.fecVtoCmp,
       }));
-
-      console.log("PARSE FLOAT", cuotasValue);
-
+  
       const resultado = {
         numCuotas: this.formCuotas.get('numCuotas')?.value,
-        primerCuota: cuotasValue[0]?.monto || 0,
-        primerVencimiento: cuotasValue[0]?.vencimiento || null,
-        cuotas: cuotasValue, // Array exacto de cuotas configuradas
+        primerCuota: cuotasValue[0]?.importe || 0,
+        primerVencimiento: cuotasValue[0]?.fecVtoCmp || null,
+        cuotas: cuotasValue,
       };
+  
       this.ref.close(resultado);
     } else {
       alert('Por favor, complete todos los campos antes de guardar.');
     }
   }
+  
+  
 
   closeDialog(): void {
     this.ref.close();
