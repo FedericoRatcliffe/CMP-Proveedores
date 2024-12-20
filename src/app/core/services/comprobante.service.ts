@@ -65,18 +65,6 @@ export class ComprobanteService {
 
 
 
-
-
-
-
-
-
-
-
-
-
-
-
   private getTokenWsCore(): Observable<string> {
     const body = {
       ClientId: 'SSIS',
@@ -124,17 +112,6 @@ export class ComprobanteService {
 
 
 
-
-
-
-
-
-
-
-
-
-
-
   // --------------------------------------------------------------------
   // BUSCAR PROVEEDOR
   obtenerProveedor(tipo: string, cadena: string): Observable<any> {
@@ -157,12 +134,6 @@ export class ComprobanteService {
   }
 
 
-
-
-
-
-
-  
   // --------------------------------------------------------------------
   // BUSCAR TIPOS DE COMPROBANTES AFIP
   obtenerTiposComprobantesAFIP(): Observable<TipoComprobanteAFIP[]> {
@@ -183,11 +154,6 @@ export class ComprobanteService {
       )
     );
   }
-
-
-
-
-
 
 
   // --------------------------------------------------------------------
@@ -239,6 +205,12 @@ export class ComprobanteService {
 
 
 
+  // --------------------------------------------------------------------
+  // --------------------------------------------------------------------
+  // SERVICIOS USADOS EN PANTALLA GESTION COMPROBANTES
 
+
+
+  
 
 }

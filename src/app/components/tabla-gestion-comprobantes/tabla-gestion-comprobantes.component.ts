@@ -27,6 +27,8 @@ import { SkeletonModule } from 'primeng/skeleton';
 })
 
 export class TablaGestionComprobantesComponent {
+
+
   products = input<Product[]>([]);
   selectedProducts = input<Product[] | null>(null);
   isLoading = input<boolean>(false);
@@ -39,4 +41,7 @@ export class TablaGestionComprobantesComponent {
     this.checkProduct.emit(event);
   }
 
+
+
+  
 }
