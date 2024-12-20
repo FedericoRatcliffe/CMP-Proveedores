@@ -39,30 +39,26 @@ export class GestionComprobantesComponent implements OnInit {
 
 
   facturasSeleccionadas = signal<Product[]>([]);
-
   products = signal<Product[]>([]);
-
   isLoading = signal<boolean>(false);
-
   nroComprobantePattern: RegExp = /^[0-9/]*$/;
-
   allowedStates = AllowedStatesOptions;
-
-  formBusquedaComprobante: FormGroup;
   
   selectedState = new FormGroup({
     state: new FormControl(null)
   })
-
+  
   public productService = inject(ProductService);
 
 
   
 
+  // PARTE MIA
+  formBusquedaComprobante: FormGroup;
+  
   constructor( private fb: FormBuilder ) {
     this.formBusquedaComprobante = this.createFormBusquedaComprobante();
   }
-
 
   private createFormBusquedaComprobante(): FormGroup {
 
