@@ -7,8 +7,9 @@ import {
   HttpResponse,
   HttpErrorResponse
 } from '@angular/common/http';
-import { catchError, map, Observable, of, throwError } from 'rxjs';
+import { catchError, map, Observable, of, switchMap, throwError } from 'rxjs';
 import { AuthService } from '../../auth/services/auth.service';
+import { environment } from '../../../environments/environment';
 
 @Injectable()
 export class HttpRequestInterceptor implements HttpInterceptor {
@@ -27,7 +28,7 @@ export class HttpRequestInterceptor implements HttpInterceptor {
         }
       })
     }
-
+    
     return next.handle(request).pipe(
       map((event: HttpEvent<any>) => {
         if (event instanceof HttpResponse) {
@@ -40,7 +41,7 @@ export class HttpRequestInterceptor implements HttpInterceptor {
           reason: error && error.error && error.error.reason ? error.error.reason : '',
           status: error.status
         };
-        if (error.status === 401) 
+        if (error.status === 401)
           this._authService.logout();
 
         return throwError(error);

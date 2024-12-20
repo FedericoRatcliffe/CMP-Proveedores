@@ -166,7 +166,6 @@ export class FormularioCargaPdfComponent implements OnInit, OnChanges {
   //MAPEO DE DATOS
   private mapearDatosAlFormulario(datos: any): void {
     this.formEnviarFactura.patchValue({
-      // tipoComprobante: datos.tipoComprobante ?? null,
       letra: datos.letra ?? null,
 
       puntoVenta: datos.puntoVenta ?? null,
@@ -261,15 +260,6 @@ export class FormularioCargaPdfComponent implements OnInit, OnChanges {
       this.cuotasArray = event.cuotasArray; // Almacena el array de cuotas procesadas
     }
   }
-
-  // setearCuotaUnica() {
-  //   let cuota: Cuota = {
-  //     nroCuota: 1,
-  //     monto: this.datosComprobante.total,
-  //     vencimiento: this.datosComprobante.fechaVencimiento
-  //   }
-  //   this.cuotasArray?.push(cuota);
-  // }
 
   private sugerirFechaPago(): void {
     const fechaCarga = new Date();
@@ -444,7 +434,7 @@ export class FormularioCargaPdfComponent implements OnInit, OnChanges {
         cuitEmisor: this.datosComprobante?.cuitEmisor,
         cuitReceptor: this.datosComprobante?.cuitReceptor,
 
-        tipoComprobante: this.formEnviarFactura.get('tipoComprobante')?.value?.name || '',
+        tipoComprobante: this.formEnviarFactura.get('tipoComprobante')?.value?.nombre || '',
 
         letraComprobante: this.formEnviarFactura.get('letra')?.value,
 

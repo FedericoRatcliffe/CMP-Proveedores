@@ -2,6 +2,7 @@ import { NgIf } from '@angular/common';
 import { Component, EventEmitter, OnInit, Output } from '@angular/core';
 import { DomSanitizer, SafeResourceUrl } from '@angular/platform-browser';
 import { ComprobanteService } from '../../core/services/comprobante.service';
+import { HeaderComprobante } from '../../core/interfaces/leerFacturaResponse.interface';
 
 @Component({
   selector: 'visualizar-carga-pdf',
@@ -110,7 +111,7 @@ export class VisualizarCargaPdfComponent implements OnInit {
   
 
   // Procesa la respuesta del servidor para extraer y emitir los datos de comprobanteAFIP, si están disponibles.
-  private handlePDFRespuesta(response: any, file: File): void {
+  private handlePDFRespuesta(response: HeaderComprobante, file: File): void {
     if (response?.comprobanteAFIP) {
       this.datosComprobante.emit({ ...response.comprobanteAFIP, archivo: file });
     } else {

@@ -7,6 +7,9 @@ import { Buffer } from 'buffer';
 import { NgxPermissionsService } from 'ngx-permissions';
 import { ApmService } from '@elastic/apm-rum-angular';
 import { isPlatformBrowser } from '@angular/common';
+import { HttpClient } from '@angular/common/http';
+import { SessionStorageService } from '../../core/services/session-storage.service';
+import { Observable, from, switchMap } from 'rxjs';
 
 @Injectable({
   providedIn: 'root'
@@ -14,7 +17,7 @@ import { isPlatformBrowser } from '@angular/common';
 export class AuthService {
 
   private tknStr = 'tkn_' + environment.app + '_' + environment.env;
-
+  
 
   constructor(@Inject(PLATFORM_ID) private _platformId: Object, @Inject(JwtHelperService) private _jwtHelperService: JwtHelperService, @Inject(CookieService) private _cookieService: CookieService, @Inject(Router) private _router: Router, @Inject(NgxPermissionsService) private _permissionsService: NgxPermissionsService, @Inject(ApmService) private _apmService: ApmService) {
 

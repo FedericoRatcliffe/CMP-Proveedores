@@ -14,7 +14,7 @@ import { FormsModule } from '@angular/forms';
 })
 export class LoginComponent implements OnInit {
 
-  public spinnerUrl = '/assets/img/loader.gif';
+  // public spinnerUrl = 'public/assets/img/loader.gif';
   public byPass = !environment.SingleSignOn;
 
   public mostrarLoader = true;

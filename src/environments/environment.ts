@@ -5,7 +5,15 @@ export const environment = {
   production: false,
   app: 'proveedores',
   env: 'Development',
+
+  clientId: 'PORTALPROVEEDORES',
+  clientSecret: '3EFEE37E-4698-4657-A12F-EB9065A8F5A5',
+  
   apiBase: 'https://apicmptest.cooperacionseguros.com.ar/wsproveedores',
+  tokenBase: 'https://apicmptest.cooperacionseguros.com.ar/token',
+  
+  apiCore: 'https://apicmptest.cooperacionseguros.com.ar/wscore',
+  
   featuresApiBase: '',
   loginBase: 'https://apicmptest.cooperacionseguros.com.ar',
   adfs: {

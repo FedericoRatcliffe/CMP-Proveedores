@@ -3,7 +3,6 @@ import { GestionComprobantesComponent } from './pages/gestion-comprobantes/gesti
 import { CargaComprobanteComponent } from './pages/carga-comprobante/carga-comprobante.component';
 import { NoAuthGuard } from './core/guards/no-auth.guard';
 import { AuthGuard } from './core/guards/auth.guard';
-import { RoleGuard } from './core/guards/role.guard';
 
 export const routes: Routes = [
     {
@@ -25,7 +24,7 @@ export const routes: Routes = [
         children: [
             {
                 path: 'proveedores',
-                canActivate: [NoAuthGuard],
+                // canActivate: [NoAuthGuard],
                 // data: {
                 //     permissions: [PERMISOS.SOC.Acceder]
                 // },
@@ -33,7 +32,7 @@ export const routes: Routes = [
             },
             {
                 path: 'subir-factura',
-                canActivate: [NoAuthGuard],
+                // canActivate: [NoAuthGuard],
                 // data: {
                 //     permissions: [PERMISOS.SOC.Socios.Acceder]
                 // },

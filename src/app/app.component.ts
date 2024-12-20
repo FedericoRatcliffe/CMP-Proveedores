@@ -1,10 +1,11 @@
-import { Component, ErrorHandler, Inject, OnInit, PLATFORM_ID } from '@angular/core';
+import { Component, ErrorHandler, Inject, OnInit, PLATFORM_ID, inject } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
 import { ApmErrorHandler, ApmService } from '@elastic/apm-rum-angular';
 import { environment } from '../environments/environment';
 import { ConfirmationService, PrimeNGConfig } from 'primeng/api';
 import { AuthService } from './auth/services/auth.service';
 import { isPlatformBrowser } from '@angular/common';
+import { LoadingService } from './core/services/loading.service';
 
 @Component({
   selector: 'app-root',
@@ -26,9 +27,11 @@ export class AppComponent implements OnInit {
 
   version = environment.version;
 
+  loadingService = inject(LoadingService);
 
+  isLoggedIn = false;
 
-  constructor(@Inject(PLATFORM_ID) private platformId: Object, private config: PrimeNGConfig, apmService: ApmService, private _authService: AuthService) {
+  constructor(@Inject(PLATFORM_ID) private platformId: Object, private config: PrimeNGConfig, apmService: ApmService) {
 
     if (isPlatformBrowser(this.platformId)) {
 
@@ -59,7 +62,7 @@ export class AppComponent implements OnInit {
 
 
   ngOnInit() {
-
+    
     this.config.setTranslation({
       accept: 'Aceptar',
       reject: 'Cancelar',

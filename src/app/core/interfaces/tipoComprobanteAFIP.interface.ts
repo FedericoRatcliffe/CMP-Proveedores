@@ -1,4 +1,4 @@
 export interface TipoComprobanteAFIP {
-    name: string;
-    code: number;
+    nombre: string;
+    idTipoComprobanteAFIP: number;
 }

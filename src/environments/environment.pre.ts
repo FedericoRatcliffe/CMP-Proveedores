@@ -8,6 +8,9 @@ export const environment = {
   apiBase: 'https://apicmppre.cooperacionseguros.com.ar/wsproveedores',
   featuresApiBase: '',
   loginBase: 'https://apicmppre.cooperacionseguros.com.ar',
+  tokenBase: 'https://apicmppre.cooperacionseguros.com.ar/token',
+
+  apiCore: 'https://apicmppre.cooperacionseguros.com.ar/wscore',
   adfs: {
     url: 'https://apicmppre.cooperacionseguros.com.ar/wsproveedores',
     bypass: 'https://apicmppre.cooperacionseguros.com.ar/proveedores'

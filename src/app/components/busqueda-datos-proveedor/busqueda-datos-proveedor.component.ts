@@ -7,6 +7,7 @@ import { ButtonModule } from 'primeng/button';
 import { InputTextModule } from 'primeng/inputtext';
 import { InputGroupModule } from 'primeng/inputgroup';
 import { TooltipModule } from 'primeng/tooltip';
+import { ProveedoresResponse } from '../../core/interfaces/proveedoresResponse.interface';
 
 
 @Component({
@@ -36,8 +37,8 @@ export class BusquedaDatosProveedorComponent {
   ctaCod: number = 0;
   razonSocialCard: string = 'RAZÓN SOCIAL';
   cuitEmisor: string = 'xxxxxxxxxxx';
-  condIva: string = 'xxxx';
-  domicilio: string = 'xxxx';
+  condIva?: string = 'xxxx';
+  domicilio?: string = 'xxxx';
 
 
   constructor(
@@ -66,7 +67,7 @@ export class BusquedaDatosProveedorComponent {
     });
   }
 
-  private actualizarInformacionProveedor(data: any[]): void {
+  private actualizarInformacionProveedor(data: ProveedoresResponse[]): void {
     if (data?.length > 0) {
       const proveedor = data[0];
       this.ctaCod = proveedor.ctacod;

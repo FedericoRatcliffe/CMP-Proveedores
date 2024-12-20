@@ -45,24 +45,24 @@
                         <p-dropdown class="w-full" styleClass="w-full"
                             [options]="tipoComprobante"
                             (ngModel)="selectedTipoComprobante"
-                            optionLabel="name"
+                            optionLabel="nombre"
                             [filter]="true"
-                            filterBy="name"
+                            filterBy="nombre"
                             [showClear]="true"
                             formControlName="tipoComprobante"
                             placeholder="Tipo de Comprobante"
                             appendTo="body"
                             >
-
+                            
                             <ng-template pTemplate="selectedItem" let-selectedOption>
                                 <div class="flex align-items-center gap-2">
-                                    <div>{{ selectedOption?.name }}</div>
+                                    <div>{{ selectedOption?.nombre }}</div>
                                 </div>
                             </ng-template>
 
                             <ng-template let-comprobante pTemplate="item">
                                 <div class="flex align-items-center gap-2">
-                                    <div>{{ comprobante.name }}</div>
+                                    <div>{{ comprobante.nombre }}</div>
                                 </div>
                             </ng-template>
 

@@ -10,7 +10,7 @@ import { AuthService } from '../services/auth.service';
 })
 export class LogoutComponent implements OnInit {
   
-  public spinnerUrl = '/assets/img/spinner.gif';
+  // public spinnerUrl = '/assets/img/spinner.gif';
 
   constructor(private _authService: AuthService) { }
 
