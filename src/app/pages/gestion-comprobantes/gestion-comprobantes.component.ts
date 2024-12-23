@@ -75,8 +75,25 @@ export class GestionComprobantesComponent implements OnInit {
 
 
 
+  enviarFormularioBusquedaComprobantes() {
+    const {
+      razonSocial,
+      nroComprobante,
+      fechaCarga,
+      fechaPago,
+      caja,
+      estado
+    } = this.formBusquedaComprobantes.value;
 
 
+
+
+  }
+
+
+  limpiarFormulario(){
+    this.formBusquedaComprobantes.reset()
+  }
 
 
 
