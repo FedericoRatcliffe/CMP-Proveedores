@@ -8,6 +8,7 @@ import { SubirArchivoResponse } from '../interfaces/subirArchivoResponse';
 import { environment } from '../../../environments/environment';
 import { HeaderComprobante } from '../interfaces/leerFacturaResponse.interface';
 import { ProveedoresResponse } from '../interfaces/proveedoresResponse.interface';
+import { ObtenerComprobanteResponse } from '../interfaces/obtenerComprobanteResponse.interface';
 
 @Injectable({
   providedIn: 'root'
@@ -87,8 +88,12 @@ export class ComprobanteService {
   // --------------------------------------------------------------------
   // --------------------------------------------------------------------
   // SERVICIOS USADOS EN PANTALLA GESTION COMPROBANTES
+  
+  obtenerComprobantesPost(body:any): Observable<ObtenerComprobanteResponse[]> {
 
-
+    return this.http.post<ObtenerComprobanteResponse[]>(`${environment.apiBase}/Comprobante/ObtenerComprobantes`, body);
+    
+  }
 
   
 

@@ -53,18 +53,18 @@ export class GestionComprobantesComponent implements OnInit {
 
   
 
-  // PARTE MIA
-  formBusquedaComprobante: FormGroup;
+
+  formBusquedaComprobantes: FormGroup;
   
   constructor( private fb: FormBuilder ) {
-    this.formBusquedaComprobante = this.createFormBusquedaComprobante();
+    this.formBusquedaComprobantes = this.createFormBusquedaComprobantes();
   }
 
-  private createFormBusquedaComprobante(): FormGroup {
+  private createFormBusquedaComprobantes(): FormGroup {
 
     return this.fb.group({
-      razonSocial: [null, Validators.required],
-      nroComprobante: [null],
+      razonSocial: [null],
+      nroComprobante: [null, Validators.required],
       fechaCarga: [null],
       fechaPago: [null],
       caja: [null],
